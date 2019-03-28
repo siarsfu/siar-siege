@@ -24,17 +24,18 @@ public class PlaneControl : MonoBehaviour {
 	void Update () {
         //this.transform.forward = Vector3.Slerp(this.transform.forward, physics.velocity.normalized, Time.deltaTime);
 
-        if (!collisionHappened)
-        {
+        //if (!collisionHappened)
+        //{
             //this.transform.forward = physics.velocity.normalized;
             this.transform.forward = Vector3.Slerp(this.transform.forward, physics.velocity.normalized, 2f*Time.deltaTime);
-        }
+       // }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collisionHappened)
             return;
+
 
         collisionHappened = true;
 
