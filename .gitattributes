@@ -23,6 +23,7 @@
 /Assets/_Packages/Oculus/Spatializer/Plugins/AudioPluginOculusSpatializer.bundle/Contents/MacOS/AudioPluginOculusSpatializer filter=lfs diff=lfs merge=lfs -text
 *.disabled filter=lfs diff=lfs merge=lfs -text
 /Assets/_Packages/TextMesh*/**/*.asset filter=lfs diff=lfs merge=lfs -text
+/Assets/TextMesh*/**/*.asset filter=lfs diff=lfs merge=lfs -text
 
 /Assets/Oculus/Platform/Plugins/MacOSX/ovrplatform.bundle/Contents/MacOS/ovrplatform filter=lfs diff=lfs merge=lfs -text
 
