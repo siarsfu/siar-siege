@@ -18,6 +18,6 @@ public class GameManager : MonoBehaviour {
 
     public void begin()
     {
-        planeGenerator.enabled = true;
+        //planeGenerator.enabled = true;
     }
 }
