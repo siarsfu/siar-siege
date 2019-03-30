@@ -22,11 +22,23 @@ public class FadingController : MonoBehaviour {
 
     public void fadeToBlackIn(float secondsBeforeFadingBlack)
     {
-        StartCoroutine(fadeToBlackAfterSeconds(secondsBeforeFadingBlack));
+        StartCoroutine(playAnimationAfterSeconds(secondsBeforeFadingBlack, fadeToBlack.name));
     }
 
-    IEnumerator fadeToBlackAfterSeconds(float seconds){
+    IEnumerator playAnimationAfterSeconds(float seconds, string animName){
         yield return new WaitForSeconds(seconds);
-        fadingAnimator.Play(fadeToBlack.name);
+        fadingAnimator.Play(animName);
+
+        //float fadingTime = fadeToBlack.length;
+
+    }
+
+    public float getFadingTime(){
+        return fadeToBlack.length;
+    }
+
+    public void fadeToWhiteIn(float secondsAfterFadingBlack)
+    {
+        StartCoroutine(playAnimationAfterSeconds(secondsAfterFadingBlack, fadeToWhite.name));
     }
 }

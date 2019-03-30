@@ -1268,6 +1268,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 327575248}
   m_Script: {fileID: 11500000, guid: fd425c2d06f39bf4899d07c05d0f10eb, type: 3}
+--- !u!1 &343929601 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0,
+    type: 2}
+  m_PrefabInternal: {fileID: 2098253424}
 --- !u!1001 &387642386
 Prefab:
   m_ObjectHideFlags: 0
@@ -2748,7 +2753,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeToBlack: {fileID: 7400000, guid: 108e960c8c1b94f7b867a91f3f25b7ff, type: 2}
-  fadeToWhite: {fileID: 0}
+  fadeToWhite: {fileID: 7400000, guid: b7891ad5cf22e4d6798228b91167a99a, type: 2}
 --- !u!1 &845820731
 GameObject:
   m_ObjectHideFlags: 0
@@ -3417,7 +3422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 127
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1065012653
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3838,6 +3843,34 @@ Prefab:
     - {fileID: 64729999524088558, guid: 3c2a9bd2594f34aa1ae969be16dff6f2, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 3c2a9bd2594f34aa1ae969be16dff6f2, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1087124498
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1087124499}
+  m_Layer: 0
+  m_Name: throneTeleport
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1087124499
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1087124498}
+  m_LocalRotation: {x: -0, y: -0.25138104, z: -0, w: 0.96788824}
+  m_LocalPosition: {x: -15.29, y: 83.06, z: 16.78}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 41
+  m_LocalEulerAnglesHint: {x: 0, y: -29.119001, z: 0}
 --- !u!1 &1105308911
 GameObject:
   m_ObjectHideFlags: 0
@@ -5095,6 +5128,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1604352391}
   - component: {fileID: 1604352390}
+  - component: {fileID: 1604352393}
+  - component: {fileID: 1604352392}
   m_Layer: 0
   m_Name: FlowControl
   m_TagString: Untagged
@@ -5118,6 +5153,8 @@ MonoBehaviour:
   menuText: {fileID: 1344966160}
   secondsBeforeFadingBlack: 2
   fadingController: {fileID: 842885230}
+  playerObject: {fileID: 343929601}
+  throneRoomTeleport: {fileID: 1087124499}
 --- !u!4 &1604352391
 Transform:
   m_ObjectHideFlags: 0
@@ -5131,6 +5168,44 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1604352392
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1604352389}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!320 &1604352393
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1604352389}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 03f30a699b79846ae88f050c642eadd4, type: 2}
+  m_InitialState: 1
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 114699835565374794, guid: 03f30a699b79846ae88f050c642eadd4, type: 2}
+    value: {fileID: 1604352392}
+  - key: {fileID: 114929987349092492, guid: 03f30a699b79846ae88f050c642eadd4, type: 2}
+    value: {fileID: 1901279753}
+  m_ExposedReferences:
+    m_References: []
 --- !u!1001 &1617609122
 Prefab:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public class FlowControl : MonoBehaviour {
     public TextMeshProUGUI menuText;
     public float secondsBeforeFadingBlack = 2f;
     public FadingController fadingController;
+    public GameObject playerObject;
+    public Transform throneRoomTeleport;
 
 	// Use this for initialization
 	void Start () {
@@ -48,27 +50,40 @@ public class FlowControl : MonoBehaviour {
         menuText.enabled = true;
 
         //fade to black after some time passes
+        beginTransitionToThroneRoom();
+    }
+
+    private void beginTransitionToThroneRoom(){
         fadingController.fadeToBlackIn(secondsBeforeFadingBlack);
-        //StartCoroutine(fadeToBlackAfterSeconds(secondsBeforeFadingBlack));
+
+        float fadingTime = fadingController.getFadingTime() + secondsBeforeFadingBlack;
+
+        StartCoroutine(teleportUserToThroneIn(fadingTime));
 
     }
 
-    private void transitionToThroneRoom(){
+    IEnumerator teleportUserToThroneIn(float seconds){
+        yield return new WaitForSeconds(seconds);
+        teleportToThrone();
 
+        float fadeBackIn = 0f;
+        float throneSceneStartsIn = fadeBackIn + fadingController.getFadingTime();
+
+        fadingController.fadeToWhiteIn(fadeBackIn);
+        StartCoroutine(throneSceneEventsIn(throneSceneStartsIn));
     }
 
-    //first - fade to black
-    //second - teleport
-    //both need to be precisely timed
-    //IEnumerator fadeToBlackAfterSeconds(float seconds){
-    //    yield return new WaitForSeconds(seconds);
-    //    fadeToBlack();
-    //}
+    private void teleportToThrone(){
+        playerObject.transform.position = throneRoomTeleport.transform.position;
+        playerObject.transform.rotation = throneRoomTeleport.transform.rotation;
+    }
 
-    //private void fadeToBlack(){
-    //    fadingAnimator.enabled = true;
-      
-    //}
+    IEnumerator throneSceneEventsIn(float seconds){
+        yield return new WaitForSeconds(seconds);
+        doThroneSceneSequence();
+    }
 
-     
+    public void doThroneSceneSequence(){
+        Debug.Log("Throne scene!");
+    }
 }
