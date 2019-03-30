@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FanRotation : MonoBehaviour {
-    public float speed = 3f;
+public class GameManager : MonoBehaviour {
+
+    public GeneratorControl planeGenerator;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -11,6 +13,11 @@ public class FanRotation : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        this.transform.Rotate(this.transform.forward, speed*Time.deltaTime, Space.World);
+		
 	}
+
+    public void begin()
+    {
+        planeGenerator.enabled = true;
+    }
 }

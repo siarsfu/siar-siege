@@ -7,7 +7,9 @@ public class PlaneControl : MonoBehaviour {
     private Rigidbody physics;
     private AudioSource audio;
 
+    private bool collisionWithEnvironment;
     private bool collisionHappened;
+
 
     public AudioClip[] paperRustles;
     private int soundsSize;
@@ -16,6 +18,7 @@ public class PlaneControl : MonoBehaviour {
 	void Start () {
         physics = this.GetComponent<Rigidbody>();
         audio = this.GetComponent<AudioSource>();
+        collisionWithEnvironment = false;
         collisionHappened = false;
         soundsSize = paperRustles.Length;
 	}
@@ -27,6 +30,7 @@ public class PlaneControl : MonoBehaviour {
         //if (!collisionHappened)
         //{
             //this.transform.forward = physics.velocity.normalized;
+        if (!collisionWithEnvironment)
             this.transform.forward = Vector3.Slerp(this.transform.forward, physics.velocity.normalized, 2f*Time.deltaTime);
        // }
     }
@@ -36,8 +40,10 @@ public class PlaneControl : MonoBehaviour {
         if (collisionHappened)
             return;
 
-
         collisionHappened = true;
+
+        if (collision.gameObject.name != "fan")
+            collisionWithEnvironment = true;
 
         int randomPaperSound = UnityEngine.Random.Range(0, soundsSize);
         audio.clip = paperRustles[randomPaperSound];

@@ -122,10 +122,10 @@ public class FanShield : MonoBehaviour {
         if (collision.gameObject.GetComponent<PlaneControl>() == null)
             return;
 
-        Debug.Log("Colliding");
+        //Debug.Log("Colliding");
             Rigidbody physics = collision.gameObject.GetComponent<Rigidbody>();
             physics.AddForce(this.transform.forward * currentPower, ForceMode.Impulse);
-            physics.useGravity = true;
+            //physics.useGravity = true;
        // }
     }
 

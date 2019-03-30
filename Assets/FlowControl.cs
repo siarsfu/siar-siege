@@ -15,6 +15,12 @@ public class FlowControl : MonoBehaviour {
     public GameObject playerObject;
     public Transform throneRoomTeleport;
 
+    public ThroneRoomControl throneRoom;
+
+    public Transform battleTeleport;
+
+    public GameManager gameManager;
+
 	// Use this for initialization
 	void Start () {
         //the experience starts with small pause after which the menu appears
@@ -85,5 +91,51 @@ public class FlowControl : MonoBehaviour {
 
     public void doThroneSceneSequence(){
         Debug.Log("Throne scene!");
+
+        float introTime = throneRoom.getIntroAudio().clip.length;
+        StartCoroutine(transitionToBattleIn(introTime));
+
+        throneRoom.playIntro();
+        throneRoom.playBackground();
+    }
+
+    IEnumerator transitionToBattleIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        throneRoom.stopBackground();
+
+        float fadeToBlackTime = 0f;
+        float overallTime = fadeToBlackTime + fadingController.getFadingTime();
+
+        fadingController.fadeToBlackIn(fadeToBlackTime);
+
+        StartCoroutine(teleportUserToBattleIn(overallTime));
+    }
+
+    IEnumerator teleportUserToBattleIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        teleportToBattle();
+
+        float fadeWhiteSeconds = 0f;
+        float beginBattleEventsTime = fadeWhiteSeconds + fadingController.getFadingTime();
+
+        fadingController.fadeToWhiteIn(fadeWhiteSeconds);
+
+        yield return new WaitForSeconds(beginBattleEventsTime);
+        doBattleSequence();
+
+    }
+
+    public void doBattleSequence()
+    {
+        Debug.Log("Battle!");
+        gameManager.begin();
+    }
+
+    public void teleportToBattle()
+    {
+        playerObject.transform.position = battleTeleport.position;
+        playerObject.transform.rotation = battleTeleport.rotation;
     }
 }
