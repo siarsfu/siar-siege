@@ -7,7 +7,13 @@ using TMPro;
 
 public class FlowControl : MonoBehaviour {
 
+    public enum MenuState
+    {
+        INTRO, PRESS_BUTTON, FINISH
+    };
+
     public VideoPlayer menuVideo;
+    public VideoPlayer scribbleVideo;
     public float secondsBeforeExperienceBegins = 2f;
     public TextMeshProUGUI menuText;
     public float secondsBeforeFadingBlack = 2f;
@@ -21,16 +27,31 @@ public class FlowControl : MonoBehaviour {
 
     public GameManager gameManager;
 
+    private MenuState state;
+
 	// Use this for initialization
 	void Start () {
         //the experience starts with small pause after which the menu appears
+        state = MenuState.INTRO;
         StartCoroutine(beginningPause(secondsBeforeExperienceBegins));
-
+        secondsBeforeFadingBlack = (float)scribbleVideo.clip.length;
+        //Debug.Log(secondsBeforeFadingBlack + " seconds before fading");
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (state != MenuState.PRESS_BUTTON)
+            return;
+
+        if (OVRInput.GetDown(OVRInput.Button.Any))
+        {
+            state = MenuState.FINISH;
+            
+            //start scribble video sequence
+            scribbleVideo.gameObject.GetComponent<Renderer>().enabled = true;
+            scribbleVideo.Play();
+            beginTransitionToThroneRoom();
+        }
 	}
 
     IEnumerator beginningPause(float seconds){
@@ -53,13 +74,14 @@ public class FlowControl : MonoBehaviour {
     IEnumerator showMenuTextAfterSeconds(float seconds){
         Debug.Log("Showing text after " + seconds+" seconds");
         yield return new WaitForSeconds(seconds);
-        menuText.enabled = true;
-
+        //menuText.enabled = true;
+        state = MenuState.PRESS_BUTTON;
         //fade to black after some time passes
-        beginTransitionToThroneRoom();
+        //beginTransitionToThroneRoom();
     }
 
     private void beginTransitionToThroneRoom(){
+        Debug.Log("Fade to black in " + secondsBeforeFadingBlack);
         fadingController.fadeToBlackIn(secondsBeforeFadingBlack);
 
         float fadingTime = fadingController.getFadingTime() + secondsBeforeFadingBlack;
