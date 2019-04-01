@@ -25,14 +25,16 @@ public class FanPickUpControl : MonoBehaviour {
     public void pickUpFan()
     {
         fanProperties.isWaiting = false;
-        fan.transform.parent = rightHand;
+        fanProperties.disableParticles();
+        fanProperties.enableRotation();
+        fanProperties.enableCollision();
 
+        fan.transform.parent = rightHand;
         //fan.transform.localPosition = Vector3.zero;
         fan.transform.localRotation = offset.localRotation;
         //fan.transform.position = rightHand.position;
         fan.transform.localPosition = offset.localPosition;
-       
 
-       
+        
     }
 }

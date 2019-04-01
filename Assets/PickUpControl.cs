@@ -15,6 +15,10 @@ public class PickUpControl : MonoBehaviour {
     private Vector3 vectorCeiling;
     private Vector3 vectorFloor;
 
+    public ParticleSystem glowingParticles;
+    public FanRotation fanRotation;
+    public Collider windCollider;
+
 	// Use this for initialization
 	void Start () {
         isWaiting = true;
@@ -36,6 +40,11 @@ public class PickUpControl : MonoBehaviour {
 
 
 	}
+
+    public void disableParticles()
+    {
+        glowingParticles.Stop();
+    }
 
     private void hoverMotion()
     {
@@ -79,5 +88,15 @@ public class PickUpControl : MonoBehaviour {
         if (distance < 0.1f)
             return true;
         return false;
+    }
+
+    public void enableRotation()
+    {
+        fanRotation.enabled = true;
+    }
+
+    public void enableCollision()
+    {
+        windCollider.enabled = true;
     }
 }

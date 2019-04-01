@@ -36,4 +36,16 @@ public class GeneratorControl : MonoBehaviour {
         int randomIndex = UnityEngine.Random.Range(0, size);
         generators[randomIndex].generatePlane();
     }
+
+  
+    public void launchSpecialPlane(AudioClip message, AudioClip response)
+    {
+        int randomIndex = UnityEngine.Random.Range(0, size);
+        generators[randomIndex].generateSpecialPlane(message, response);
+    }
+
+    public void increaseFrequency(float generatorIncreaseStep)
+    {
+        secondPeriod -= generatorIncreaseStep;
+    }
 }

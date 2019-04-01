@@ -14,13 +14,23 @@ public class PlaneControl : MonoBehaviour {
     public AudioClip[] paperRustles;
     private int soundsSize;
 
+    public bool isSpecialPlane = false;
+    public AudioClip responeMessage;
+
+    public AudioSource responseAudio;
+    public GameManager gameManager;
+
+
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         physics = this.GetComponent<Rigidbody>();
         audio = this.GetComponent<AudioSource>();
         collisionWithEnvironment = false;
         collisionHappened = false;
         soundsSize = paperRustles.Length;
+
+        responseAudio = GameObject.Find("response_audio").GetComponent<AudioSource>();
+        gameManager = GameObject.FindGameObjectWithTag("System").GetComponent<GameManager>();
 	}
 	
 	// Update is called once per frame
@@ -37,6 +47,7 @@ public class PlaneControl : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
+       // Debug.Log("Colliding with " + collision.gameObject.name);
         if (collisionHappened)
             return;
 
@@ -45,15 +56,55 @@ public class PlaneControl : MonoBehaviour {
         if (collision.gameObject.name != "fan")
             collisionWithEnvironment = true;
 
-        int randomPaperSound = UnityEngine.Random.Range(0, soundsSize);
-        audio.clip = paperRustles[randomPaperSound];
-        audio.Play();
-        StartCoroutine(die());
+
+        if (!isSpecialPlane)
+        {
+            int randomPaperSound = UnityEngine.Random.Range(0, soundsSize);
+            audio.clip = paperRustles[randomPaperSound];
+            audio.Play();
+            StartCoroutine(die());
+        }
+        else
+        {
+            Debug.Log("Special plane lands on "+collision.gameObject.name);
+            audio.Play();
+
+            float clipLength = audio.clip.length;
+            StartCoroutine(playResponseIn(clipLength));
+            
+        }
+
+    }
+
+    IEnumerator playResponseIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        responseAudio.clip = responeMessage;
+        responseAudio.Play();
+
+        float clipLength = responeMessage.length;
+        StartCoroutine(resumeBattleIn(seconds));
+
+        yield return null;
+    }
+
+    IEnumerator resumeBattleIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        gameManager.nextIteration();
 
     }
 
     IEnumerator die(){
         yield return new WaitForSeconds(3f);
         Destroy(this.gameObject);
+    }
+
+   
+    public void setMessageAudio(AudioClip message, AudioClip response)
+    {
+        Debug.Log(message.name + " "+ response.name);
+        audio.clip = message;
+        responeMessage = response;
     }
 }

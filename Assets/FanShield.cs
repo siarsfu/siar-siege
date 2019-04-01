@@ -69,12 +69,12 @@ public class FanShield : MonoBehaviour {
         }
         //this.transform.Rotate(this.transform.forward, currentSpeed, Space.World);
 
-        if (currentGrabber.grabbedObject == null)
-        {
-            windHitCollider.enabled = false;
-        } else if (currentGrabber.grabbedObject.gameObject == this.gameObject) {
-            windHitCollider.enabled = true;
-        }
+        //if (currentGrabber.grabbedObject == null)
+        //{
+        //    windHitCollider.enabled = false;
+        //} else if (currentGrabber.grabbedObject.gameObject == this.gameObject) {
+        //    windHitCollider.enabled = true;
+        //}
 
         
 	}
@@ -114,10 +114,6 @@ public class FanShield : MonoBehaviour {
         //else
         //{
 
-        if (rightGrabber.grabbedObject == null)
-        {
-            return;
-        }
 
         if (collision.gameObject.GetComponent<PlaneControl>() == null)
             return;
