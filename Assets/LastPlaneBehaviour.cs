@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class LastPlaneBehaviour : MonoBehaviour {
     public Transform finalPosition;
 
     private PickUpControl pickUpControl;
+    public FlyingAnimationRender animationRender;
 
 	// Use this for initialization
 	void Start () {
@@ -48,5 +50,15 @@ public class LastPlaneBehaviour : MonoBehaviour {
         manager.initiateFinalState();
 
         yield return null;
+    }
+
+    public void animateTrajectory()
+    {
+        animationRender.Play();
+    }
+
+    public void stopAnimatingTrajectory()
+    {
+        animationRender.Stop();
     }
 }

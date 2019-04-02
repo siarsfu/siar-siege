@@ -19,10 +19,13 @@ public class FlyingAnimationRender : MonoBehaviour {
     private IEnumerator loop;
     public bool animationRunning = false;
 
+    public Renderer planeRenderer;
+
 	// Use this for initialization
 	void Start () {
         lineRenderer = this.GetComponent<LineRenderer>();
         currentIndex = 0;
+        planeRenderer.enabled = false;
 
         totalPositionSize = lineRenderer.positionCount;
         allLinePositions = new Vector3[totalPositionSize];
@@ -96,7 +99,7 @@ public class FlyingAnimationRender : MonoBehaviour {
 
     public void Stop()
     {
-    
+        planeRenderer.enabled = false;
         animationRunning = false;
         objectToRender.transform.position = Vector3.zero;
         currentIndex = 0;
@@ -104,7 +107,7 @@ public class FlyingAnimationRender : MonoBehaviour {
 
     public void Play()
     {
-
+        planeRenderer.enabled = true;
         animationRunning = true;
     }
 }

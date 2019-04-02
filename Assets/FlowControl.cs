@@ -29,6 +29,11 @@ public class FlowControl : MonoBehaviour {
 
     private MenuState state;
 
+    public AudioSource menuMusic;
+    public AudioSource scribbleMusic;
+
+    private IEnumerator lowerMenuVolume;
+
 	// Use this for initialization
 	void Start () {
         //the experience starts with small pause after which the menu appears
@@ -36,6 +41,7 @@ public class FlowControl : MonoBehaviour {
         StartCoroutine(beginningPause(secondsBeforeExperienceBegins));
         secondsBeforeFadingBlack = (float)scribbleVideo.clip.length;
         //Debug.Log(secondsBeforeFadingBlack + " seconds before fading");
+        lowerMenuVolume = lowerVolumeMenu();
 	}
 	
 	// Update is called once per frame
@@ -43,16 +49,31 @@ public class FlowControl : MonoBehaviour {
         if (state != MenuState.PRESS_BUTTON)
             return;
 
-        if (OVRInput.GetDown(OVRInput.Button.Any))
+        if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
         {
             state = MenuState.FINISH;
             
             //start scribble video sequence
             scribbleVideo.gameObject.GetComponent<Renderer>().enabled = true;
             scribbleVideo.Play();
+
+            //play scribble sound
+            scribbleMusic.Play();
+
+            //volume down the menu music
+            StartCoroutine(lowerMenuVolume);
+
             beginTransitionToThroneRoom();
         }
 	}
+
+    IEnumerator lowerVolumeMenu(){
+        while(true){
+
+            menuMusic.volume = Mathf.Lerp(menuMusic.volume, 0f, Time.deltaTime);
+            yield return null;
+        }
+    }
 
     IEnumerator beginningPause(float seconds){
         yield return new WaitForSeconds(seconds);
@@ -113,6 +134,8 @@ public class FlowControl : MonoBehaviour {
 
     public void doThroneSceneSequence(){
         Debug.Log("Throne scene!");
+        StopCoroutine(lowerMenuVolume);
+        menuMusic.Stop();
 
         float introTime = throneRoom.getIntroAudio().clip.length;
         StartCoroutine(transitionToBattleIn(introTime));

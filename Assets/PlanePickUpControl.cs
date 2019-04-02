@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,7 +30,10 @@ public class PlanePickUpControl : MonoBehaviour {
 
         if (isReadyToBeThrowed)
         {
-            if (handVelocity > 2.5f)
+            if (!aimingIsCorrect())
+                return;
+
+            if (handVelocity > 2.5f || Input.GetKeyDown(KeyCode.R))
             {
                 Rigidbody planePhysics = lastPlane.GetComponent<Rigidbody>();
                 lastPlane.transform.parent = null;
@@ -45,12 +49,29 @@ public class PlanePickUpControl : MonoBehaviour {
             }
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
-        {
-            isReadyToBeThrowed = true;
-            lastPlaneBehavior.begin();
-        }
+        //if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+        //{
+        //    isReadyToBeThrowed = true;
+        //    lastPlaneBehavior.begin();
+        //}
 	}
+
+    private bool aimingIsCorrect()
+    {
+        //check whether collides with the throwing plane
+
+        RaycastHit hit;
+        float distance = 100f;
+        int layer = 1 << 13;
+        //layer = ~layer;
+
+        if (Physics.Raycast(lastPlane.transform.position, lastPlane.transform.forward, out hit, distance, layer)){
+            lastPlaneBehavior.animateTrajectory();
+            return true;
+        }
+        lastPlaneBehavior.stopAnimatingTrajectory();
+        return false;
+    }
 
     public void pickUpFan()
     {

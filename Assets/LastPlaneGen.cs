@@ -12,7 +12,7 @@ public class LastPlaneGen : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        //generatePlane();
+       //generatePlane();
         
 	}
 	

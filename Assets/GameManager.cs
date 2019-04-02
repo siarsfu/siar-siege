@@ -26,12 +26,13 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator gameLoop;
     private int currentIndex;
+    public HealthBarManager healthBar;
 
 	// Use this for initialization
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
         messagePeriod = experienceTimeSeconds / numberOfMessages;
-        generatorIncreaseStep = 1f / numberOfMessages;
+        generatorIncreaseStep = 0.8f / numberOfMessages;
         state = GameState.INTRO;
         gameLoop = siegeGameLoop();
         currentIndex = 0;
@@ -42,7 +43,7 @@ public class GameManager : MonoBehaviour {
 
         if (state == GameState.BEFORE_PLAYING)
         {
-            if (OVRInput.GetDown(OVRInput.Button.Any))
+            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
             {
                 state = GameState.PLAYING;
                 Debug.Log("Playing!");
@@ -55,7 +56,7 @@ public class GameManager : MonoBehaviour {
         }
         else if (state == GameState.FINISH)
         {
-            if (OVRInput.GetDown(OVRInput.Button.Any))
+            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
             {
                 state = GameState.END;
                 planePickUpControl.pickUpFan();
@@ -94,6 +95,8 @@ public class GameManager : MonoBehaviour {
     {
         
         currentIndex++;
+        healthBar.planeHit();
+
         Debug.Log("Next iteration and index is " + currentIndex);
         planeGenerator.increaseFrequency(generatorIncreaseStep);
         if (currentIndex == numberOfMessages)
@@ -115,7 +118,7 @@ public class GameManager : MonoBehaviour {
     {
         for (int i = 0; i < numberOfMessages; i++) 
         {
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(2f);
             planeGenerator.increaseFrequency(-generatorIncreaseStep);
         }
 
