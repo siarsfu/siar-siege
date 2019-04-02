@@ -10,12 +10,13 @@ public class PlanePickUpControl : MonoBehaviour {
     public Transform rightHand;
 
 
-    public float handVelocity;
+    public Vector3 handVelocity;
 
     private LastPlaneBehaviour lastPlaneBehavior;
     private PickUpControl lastPlaneProperties;
     private PlaneControl planeControl;
     private bool isReadyToBeThrowed = false;
+    public bool isUsedOnPC = true;
 
 	// Use this for initialization
 	void Start () {
@@ -24,7 +25,7 @@ public class PlanePickUpControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        handVelocity = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch).magnitude;
+        handVelocity = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
 
 
 
@@ -33,7 +34,11 @@ public class PlanePickUpControl : MonoBehaviour {
             if (!aimingIsCorrect())
                 return;
 
-            if (handVelocity > 2.5f || Input.GetKeyDown(KeyCode.R))
+            if (!handVelocityInRightDirection() && !isUsedOnPC)
+                return;
+            
+
+            if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R))
             {
                 Rigidbody planePhysics = lastPlane.GetComponent<Rigidbody>();
                 lastPlane.transform.parent = null;
@@ -46,6 +51,9 @@ public class PlanePickUpControl : MonoBehaviour {
                 planeControl.enabled = true;
 
                 isReadyToBeThrowed = false;
+                lastPlaneBehavior.stopAnimatingTrajectory();
+
+                GameObject.FindWithTag("System").GetComponent<GameManager>().initiateFinishAnimation();
             }
         }
 
@@ -55,6 +63,21 @@ public class PlanePickUpControl : MonoBehaviour {
         //    lastPlaneBehavior.begin();
         //}
 	}
+
+    private bool handVelocityInRightDirection()
+    {
+        Vector3 controllerPos = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
+        RaycastHit hit;
+        float distance = 100f;
+        int layer = 1 << 13;
+
+        if (Physics.Raycast(controllerPos, handVelocity.normalized, out hit, distance, layer))
+        {
+            //lastPlaneBehavior.animateTrajectory();
+            return true;
+        }
+        return false;
+    }
 
     private bool aimingIsCorrect()
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ public class PickUpControl : MonoBehaviour {
     public ParticleSystem glowingParticles;
     public FanRotation fanRotation;
     public Collider windCollider;
+    public ParticleSystem windParticles;
+    public AudioSource fanSound;
 
     public Renderer bodyRender;
     public Renderer propellerRender;
@@ -39,9 +42,19 @@ public class PickUpControl : MonoBehaviour {
 
         glowingParticles.Play();
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    public void enableSound()
+    {
+        fanSound.Play();
+    }
+
+    public void enableParticleSystem()
+    {
+        windParticles.Play();
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (isWaiting)
         {
             this.transform.Rotate(Vector3.up, rotatingSpeed * Time.deltaTime);
@@ -118,5 +131,19 @@ public class PickUpControl : MonoBehaviour {
         propellerRender.material = propellerFade;
 
         animator.enabled = true;
+
+        windParticles.Stop();
+
+        StartCoroutine(silenceFan());
+    }
+
+    IEnumerator silenceFan(){
+        while(true){
+
+
+            fanSound.volume = Mathf.Lerp(fanSound.volume, 0f, Time.deltaTime);
+
+            yield return null;
+        }
     }
 }

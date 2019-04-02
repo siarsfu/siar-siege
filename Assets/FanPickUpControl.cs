@@ -32,6 +32,8 @@ public class FanPickUpControl : MonoBehaviour {
         fanProperties.disableParticles();
         fanProperties.enableRotation();
         fanProperties.enableCollision();
+        fanProperties.enableParticleSystem();
+        fanProperties.enableSound();
 
         fan.transform.parent = rightHand;
         //fan.transform.localPosition = Vector3.zero;

@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class GameManager : MonoBehaviour {
 
@@ -28,6 +30,9 @@ public class GameManager : MonoBehaviour {
     private int currentIndex;
     public HealthBarManager healthBar;
 
+    public PostProcessProfile postProcess;
+    public ParticleSystem fog;
+
 	// Use this for initialization
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
@@ -36,6 +41,8 @@ public class GameManager : MonoBehaviour {
         state = GameState.INTRO;
         gameLoop = siegeGameLoop();
         currentIndex = 0;
+
+       // initiateFinishAnimation();
 	}
 	
 	// Update is called once per frame
@@ -66,6 +73,36 @@ public class GameManager : MonoBehaviour {
         }
 
 	}
+
+    public void initiateFinishAnimation()
+    {
+        StartCoroutine(getBackToNormal());
+    }
+
+    IEnumerator getBackToNormal(){
+
+        Material skyboxMat = RenderSettings.skybox;
+
+
+        ColorGrading colorGrading;
+        postProcess.TryGetSettings(out colorGrading);
+        //colorGrading.saturation.value = 0;
+        fog.Stop();
+        
+
+        while(true){
+            colorGrading.saturation.value = Mathf.Lerp(colorGrading.saturation.value, 0f, Time.deltaTime);
+            float fogEnd = skyboxMat.GetFloat("_FogEnd");
+            float lerpedValue = Mathf.Lerp(fogEnd, 0f, Time.deltaTime);
+            skyboxMat.SetFloat("_FogEnd", lerpedValue);
+
+            RenderSettings.fogEndDistance = Mathf.Lerp(RenderSettings.fogEndDistance, 1000f, Time.deltaTime);
+
+            yield return null;
+        }
+
+        yield return null;
+    }
 
     IEnumerator siegeGameLoop()
     {
