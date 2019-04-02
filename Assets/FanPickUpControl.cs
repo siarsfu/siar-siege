@@ -12,9 +12,13 @@ public class FanPickUpControl : MonoBehaviour {
 
     private PickUpControl fanProperties;
 
+    public AnimationClip fadingAnimation;
+
+
 	// Use this for initialization
 	void Start () {
         fanProperties = fan.GetComponent<PickUpControl>();
+
 	}
 	
 	// Update is called once per frame
@@ -36,5 +40,21 @@ public class FanPickUpControl : MonoBehaviour {
         fan.transform.localPosition = offset.localPosition;
 
         
+    }
+
+    public void fadeAway()
+    {
+        fanProperties.fadeModel();
+
+        float clipLength = fadingAnimation.length;
+
+        StartCoroutine(destroyFanIn(clipLength));
+
+    }
+
+    IEnumerator destroyFanIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        Destroy(fan);
     }
 }

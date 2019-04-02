@@ -81,7 +81,17 @@ ModelImporter:
     3300002: polySurface6
     4300000: polySurface6
     4300002: polySurface1
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: blinn1
+    second: {fileID: 2100000, guid: f7ef7c1ceccc18a40abff59fc5de34bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert2
+    second: {fileID: 2100000, guid: 2e898c236be92064d95f1ea5a9a640af, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

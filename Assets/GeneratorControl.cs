@@ -48,4 +48,9 @@ public class GeneratorControl : MonoBehaviour {
     {
         secondPeriod -= generatorIncreaseStep;
     }
+
+    public void Stop()
+    {
+        StopAllCoroutines();
+    }
 }

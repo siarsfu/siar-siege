@@ -6,18 +6,20 @@ public class GameManager : MonoBehaviour {
 
     public enum GameState
     {
-        INTRO, BEFORE_PLAYING, PLAYING, FINISH
+        INTRO, BEFORE_PLAYING, PLAYING, FINISH, END
     };
 
     public SiegeAudioManager audioManager;
 
     public GeneratorControl planeGenerator;
+    public LastPlaneGen lastPlaneGenerator;
     public FanPickUpControl fanPickUpControl;
+    public PlanePickUpControl planePickUpControl;
 
     public float experienceTimeSeconds = 60f;
     public int numberOfMessages;
     public float secondsBeforeFirstMessage = 10f;
-    public float generatorIncreaseStep = 0.2f;
+    public float generatorIncreaseStep = 0.25f;
 
     private float messagePeriod;
     private GameState state;
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour {
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
         messagePeriod = experienceTimeSeconds / numberOfMessages;
+        generatorIncreaseStep = 1f / numberOfMessages;
         state = GameState.INTRO;
         gameLoop = siegeGameLoop();
         currentIndex = 0;
@@ -37,24 +40,35 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (state != GameState.BEFORE_PLAYING)
-            return;
-
-        if (OVRInput.GetDown(OVRInput.Button.Any))
+        if (state == GameState.BEFORE_PLAYING)
         {
-            state = GameState.PLAYING;
-            Debug.Log("Playing!");
+            if (OVRInput.GetDown(OVRInput.Button.Any))
+            {
+                state = GameState.PLAYING;
+                Debug.Log("Playing!");
 
-            //TODO: fan pickup
-            fanPickUpControl.pickUpFan();
+                //TODO: fan pickup
+                fanPickUpControl.pickUpFan();
 
-            StartCoroutine(siegeGameLoop());
+                StartCoroutine(siegeGameLoop());
+            }
+        }
+        else if (state == GameState.FINISH)
+        {
+            if (OVRInput.GetDown(OVRInput.Button.Any))
+            {
+                state = GameState.END;
+                planePickUpControl.pickUpFan();
+                
+
+            }
         }
 
 	}
 
     IEnumerator siegeGameLoop()
     {
+        Debug.Log("Next plane coming in " + messagePeriod);
         yield return new WaitForSeconds(messagePeriod);
         AudioClip message = audioManager.retrieveMessageAt(currentIndex);
         Debug.Log(message.name);
@@ -78,17 +92,55 @@ public class GameManager : MonoBehaviour {
 
     public void nextIteration()
     {
-        Debug.Log("Next iteration and index is "+currentIndex);
+        
         currentIndex++;
+        Debug.Log("Next iteration and index is " + currentIndex);
         planeGenerator.increaseFrequency(generatorIncreaseStep);
         if (currentIndex == numberOfMessages)
         {
             Debug.Log("End game");
+            //state = GameState.FINISH;
+            //let planes come at increased speed
+            //then slowly start decrease
+            StartCoroutine(decreasePlanesFrequency());
         }
         else
         {
             StartCoroutine(siegeGameLoop());
         }
         
+    }
+
+    IEnumerator decreasePlanesFrequency()
+    {
+        for (int i = 0; i < numberOfMessages; i++) 
+        {
+            yield return new WaitForSeconds(4f);
+            planeGenerator.increaseFrequency(-generatorIncreaseStep);
+        }
+
+        //planeGenerator.enabled = false;
+        planeGenerator.Stop();
+
+        //fade the fan away
+        fanPickUpControl.fadeAway();
+        
+        //take the length of the animation
+        float clipLength = fanPickUpControl.fadingAnimation.length;
+        StartCoroutine(throwLastPlaneIn(clipLength));
+
+        yield return null;
+    }
+
+    IEnumerator throwLastPlaneIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        Debug.Log("last plane");
+        lastPlaneGenerator.generatePlane();
+    }
+
+    public void initiateFinalState()
+    {
+        state = GameState.FINISH;
     }
 }

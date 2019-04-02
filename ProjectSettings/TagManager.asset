@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - System
+  - last_plane
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - NoKnockback
   - Environment
   - Fan
-  - 
+  - ThrowingPlane
   - 
   - 
   - 

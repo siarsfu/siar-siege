@@ -19,6 +19,14 @@ public class PickUpControl : MonoBehaviour {
     public FanRotation fanRotation;
     public Collider windCollider;
 
+    public Renderer bodyRender;
+    public Renderer propellerRender;
+
+    public Material bodyFade;
+    public Material propellerFade;
+
+    private Animator animator;
+
 	// Use this for initialization
 	void Start () {
         isWaiting = true;
@@ -26,6 +34,10 @@ public class PickUpControl : MonoBehaviour {
         isGoingUp = true;
         vectorCeiling = this.transform.position + this.transform.up*0.125f;
         vectorFloor = this.transform.position - this.transform.up*0.125f;
+
+        animator = this.GetComponent<Animator>();
+
+        glowingParticles.Play();
 	}
 	
 	// Update is called once per frame
@@ -98,5 +110,13 @@ public class PickUpControl : MonoBehaviour {
     public void enableCollision()
     {
         windCollider.enabled = true;
+    }
+
+    public void fadeModel()
+    {
+        bodyRender.material = bodyFade;
+        propellerRender.material = propellerFade;
+
+        animator.enabled = true;
     }
 }

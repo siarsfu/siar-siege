@@ -9,17 +9,20 @@ public class PlaneControl : MonoBehaviour {
 
     private bool collisionWithEnvironment;
     private bool collisionHappened;
+    private bool triggerHappened;
 
 
     public AudioClip[] paperRustles;
     private int soundsSize;
 
     public bool isSpecialPlane = false;
+    public bool isLastPlane = false;
     public AudioClip responeMessage;
 
     public AudioSource responseAudio;
     public GameManager gameManager;
 
+    public GameObject exclamation;
 
 	// Use this for initialization
 	void Awake () {
@@ -27,6 +30,7 @@ public class PlaneControl : MonoBehaviour {
         audio = this.GetComponent<AudioSource>();
         collisionWithEnvironment = false;
         collisionHappened = false;
+        triggerHappened = false;
         soundsSize = paperRustles.Length;
 
         responseAudio = GameObject.Find("response_audio").GetComponent<AudioSource>();
@@ -48,6 +52,10 @@ public class PlaneControl : MonoBehaviour {
     private void OnCollisionEnter(Collision collision)
     {
        // Debug.Log("Colliding with " + collision.gameObject.name);
+
+        //if (isLastPlane)
+        //    return;
+
         if (collisionHappened)
             return;
 
@@ -76,6 +84,26 @@ public class PlaneControl : MonoBehaviour {
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isLastPlane)
+            return;
+
+        if (triggerHappened)
+            return;
+
+        triggerHappened = true;
+
+        Debug.Log("Trigger!");
+
+        physics.velocity = Vector3.zero;
+        physics.isKinematic = true;
+        physics.useGravity = false;
+
+        //begin transition to the space needed
+        this.GetComponent<LastPlaneBehaviour>().begin();
+    }
+
     IEnumerator playResponseIn(float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -83,7 +111,7 @@ public class PlaneControl : MonoBehaviour {
         responseAudio.Play();
 
         float clipLength = responeMessage.length;
-        StartCoroutine(resumeBattleIn(seconds));
+        StartCoroutine(resumeBattleIn(clipLength));
 
         yield return null;
     }
@@ -92,6 +120,8 @@ public class PlaneControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
         gameManager.nextIteration();
+        exclamation.SetActive(false);
+
 
     }
 
