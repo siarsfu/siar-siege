@@ -115,11 +115,18 @@ public class FanShield : MonoBehaviour {
         //{
 
 
-        if (collision.gameObject.GetComponent<PlaneControl>() == null)
-            return;
+        //if (collision.gameObject.GetComponent<PlaneControl>() == null)
+        //    return;
 
         //Debug.Log("Colliding");
             Rigidbody physics = collision.gameObject.GetComponent<Rigidbody>();
+
+            if (collision.gameObject.GetComponent<BeastNode>() != null)
+                collision.gameObject.GetComponent<BeastNode>().enabled = false;
+            physics.isKinematic = false;
+            physics.useGravity = true;
+            physics.constraints = RigidbodyConstraints.None;
+
             physics.AddForce(this.transform.forward * currentPower, ForceMode.Impulse);
             //physics.useGravity = true;
        // }

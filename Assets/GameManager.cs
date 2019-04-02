@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour {
     public PostProcessProfile postProcess;
     public ParticleSystem fog;
 
+    public BeastReset[] beasts;
+    public BeastReset[] backgroundBeasts;
+
 	// Use this for initialization
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
@@ -58,6 +61,9 @@ public class GameManager : MonoBehaviour {
                 //TODO: fan pickup
                 fanPickUpControl.pickUpFan();
 
+                //disable wyverns which are close
+                disableWyverns();
+
                 StartCoroutine(siegeGameLoop());
             }
         }
@@ -74,9 +80,26 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+    private void disableWyverns()
+    {
+        for (int i = 0; i < beasts.Length; i++)
+        {
+            beasts[i].Stop();
+        }
+    }
+
+    private void disableBackWyverns()
+    {
+        for (int i = 0; i < backgroundBeasts.Length; i++)
+        {
+            backgroundBeasts[i].Stop();
+
+        }
+    }
+
     public void initiateFinishAnimation()
     {
-        StartCoroutine(getBackToNormal());
+       // StartCoroutine(getBackToNormal());
     }
 
     IEnumerator getBackToNormal(){
@@ -161,6 +184,9 @@ public class GameManager : MonoBehaviour {
 
         //planeGenerator.enabled = false;
         planeGenerator.Stop();
+
+        //disable all wyverns
+        disableBackWyverns();
 
         //fade the fan away
         fanPickUpControl.fadeAway();

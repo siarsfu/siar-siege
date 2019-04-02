@@ -25,4 +25,9 @@ public class BeastReset : MonoBehaviour {
         }
         yield return null;
     }
+
+    public void Stop()
+    {
+        StopAllCoroutines();
+    }
 }
