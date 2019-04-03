@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4905492020850032}
   - component: {fileID: 33869386573821304}
   - component: {fileID: 23302499454048708}
-  - component: {fileID: 64729999524088558}
+  - component: {fileID: 65332135298300642}
   m_Layer: 9
   m_Name: paper plane animation
   m_TagString: Untagged
@@ -131,8 +131,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!64 &64729999524088558
-MeshCollider:
+--- !u!65 &65332135298300642
+BoxCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -140,11 +140,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 1
-  m_CookingOptions: 14
-  m_SkinWidth: 0.01
-  m_Mesh: {fileID: 4300000, guid: 33a7ef86ba6f844c09a0e8aa82de2cb3, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.02958361, y: 0.006958149, z: 0.02321629}
+  m_Center: {x: -0.00021161325, y: -0.0028519027, z: 0}
 --- !u!82 &82804400014714144
 AudioSource:
   m_ObjectHideFlags: 1
@@ -263,6 +261,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 02bf38028bb1e4163abeaaaf226701f6, type: 3}
   - {fileID: 8300000, guid: db181141bc20d4159a08a66ea10fdd2f, type: 3}
   isSpecialPlane: 0
+  isLastPlane: 0
   responeMessage: {fileID: 0}
   responseAudio: {fileID: 0}
   gameManager: {fileID: 0}
+  exclamation: {fileID: 0}

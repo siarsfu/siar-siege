@@ -5,6 +5,10 @@ using UnityEngine;
 public class ThroneRoomControl : MonoBehaviour {
 
     public AudioSource introNarrative;
+
+    public AudioClip throneSpeechSecond;
+    public AudioClip annoyedSpeech;
+    public AudioClip fanSpeech;
     public AudioSource backgroundCrowd;
 
 	// Use this for initialization
@@ -19,6 +23,18 @@ public class ThroneRoomControl : MonoBehaviour {
 
     public void playIntro()
     {
+        introNarrative.Play();
+    }
+
+    public void playSecondPiece()
+    {
+        introNarrative.clip = throneSpeechSecond;
+        introNarrative.Play();
+    }
+
+    public void playAnnoyed()
+    {
+        introNarrative.clip = annoyedSpeech;
         introNarrative.Play();
     }
 
@@ -45,5 +61,11 @@ public class ThroneRoomControl : MonoBehaviour {
             backgroundCrowd.volume = Mathf.Lerp(backgroundCrowd.volume, 0f, Time.deltaTime);
             yield return null;
         }
+    }
+
+    public void playFanSpeech()
+    {
+        introNarrative.clip = fanSpeech;
+        introNarrative.Play();
     }
 }

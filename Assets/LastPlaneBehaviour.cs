@@ -9,12 +9,15 @@ public class LastPlaneBehaviour : MonoBehaviour {
 
     private PickUpControl pickUpControl;
     public FlyingAnimationRender animationRender;
+    private PlaneControl planeControl;
 
 	// Use this for initialization
 	void Start () {
         finalPosition = GameObject.Find("last_plane_final_pos").transform;
 
         pickUpControl = this.GetComponent<PickUpControl>();
+
+        planeControl = this.GetComponent<PlaneControl>();
 	}
 	
 	// Update is called once per frame
@@ -43,11 +46,12 @@ public class LastPlaneBehaviour : MonoBehaviour {
         }
 
         //next step: make it hover and rotate
-        pickUpControl.enabled = true;
+        //pickUpControl.enabled = true;
 
         //notify system that the final stage is ready
         GameManager manager = GameObject.FindGameObjectWithTag("System").GetComponent<GameManager>();
-        manager.initiateFinalState();
+        //manager.initiateFinalState();
+        planeControl.playMessage();
 
         yield return null;
     }

@@ -36,6 +36,16 @@ public class GameManager : MonoBehaviour {
     public BeastReset[] beasts;
     public BeastReset[] backgroundBeasts;
 
+    public GameObject magicMessage;
+
+    public ThroneRoomControl throneRoom;
+    public GameObject fan;
+    public FanRotation fanRotation;
+    public ParticleSystem fanParticles;
+    public FanSoundManager fanSound;
+
+    public ParticleSystem fanMagicPoof;
+
 	// Use this for initialization
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
@@ -45,6 +55,7 @@ public class GameManager : MonoBehaviour {
         gameLoop = siegeGameLoop();
         currentIndex = 0;
 
+        //StartCoroutine(siegeGameLoop());
        // initiateFinishAnimation();
 	}
 	
@@ -60,6 +71,7 @@ public class GameManager : MonoBehaviour {
 
                 //TODO: fan pickup
                 fanPickUpControl.pickUpFan();
+                throneRoom.playFanSpeech();
 
                 //disable wyverns which are close
                 disableWyverns();
@@ -99,7 +111,7 @@ public class GameManager : MonoBehaviour {
 
     public void initiateFinishAnimation()
     {
-       // StartCoroutine(getBackToNormal());
+       StartCoroutine(getBackToNormal());
     }
 
     IEnumerator getBackToNormal(){
@@ -131,11 +143,20 @@ public class GameManager : MonoBehaviour {
     {
         Debug.Log("Next plane coming in " + messagePeriod);
         yield return new WaitForSeconds(messagePeriod);
+
+        //stop the siege happening
+        planeGenerator.Stop();
+
         AudioClip message = audioManager.retrieveMessageAt(currentIndex);
         Debug.Log(message.name);
         AudioClip response = audioManager.retrieveResponseAt(currentIndex);
-        Debug.Log(response.name);
+        //Debug.Log(response.name);
         planeGenerator.launchSpecialPlane(message, response);
+        
+        //stop the fan
+        fanRotation.StopFan();
+        fanParticles.Stop();
+        fanSound.decreaseSound();
         
 
         yield return null;
@@ -147,9 +168,29 @@ public class GameManager : MonoBehaviour {
         planeGenerator.enabled = true;
 
         //state is now before playing, the real game will start after user picks up the fan
-        state = GameState.BEFORE_PLAYING;
+        //state = GameState.BEFORE_PLAYING;
+
+        StartCoroutine(playAnnoyedMessageIn(5f));
+
         //until user picks up the fan, nothing happens
     }
+
+    IEnumerator playAnnoyedMessageIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        throneRoom.playAnnoyed();
+
+        yield return new WaitForSeconds(throneRoom.getIntroAudio().clip.length);
+
+        fanMagicPoof.Play();
+        yield return new WaitForSeconds(fanMagicPoof.main.startLifetime.constant / 2);
+        fan.SetActive(true);
+        state = GameState.BEFORE_PLAYING;
+
+    }
+
+   
+
 
     public void nextIteration()
     {
@@ -159,19 +200,36 @@ public class GameManager : MonoBehaviour {
 
         Debug.Log("Next iteration and index is " + currentIndex);
         planeGenerator.increaseFrequency(generatorIncreaseStep);
+       
         if (currentIndex == numberOfMessages)
         {
             Debug.Log("End game");
             //state = GameState.FINISH;
             //let planes come at increased speed
             //then slowly start decrease
-            StartCoroutine(decreasePlanesFrequency());
+            
+            
+            //StartCoroutine(decreasePlanesFrequency());
+            fanPickUpControl.fadeAway();
+            float clipLength = fanPickUpControl.fadingAnimation.length;
+            StartCoroutine(displayMagicMessageIn(clipLength));
         }
         else
         {
+            fanRotation.StartFan();
+            fanParticles.Play();
+            fanSound.increaseVolume();
+            planeGenerator.Resume();
             StartCoroutine(siegeGameLoop());
         }
         
+    }
+
+    IEnumerator displayMagicMessageIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        magicMessage.GetComponent<MagicMessage>().showMessage();
+
     }
 
     IEnumerator decreasePlanesFrequency()

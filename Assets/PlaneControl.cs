@@ -24,6 +24,10 @@ public class PlaneControl : MonoBehaviour {
 
     public GameObject exclamation;
 
+    public ParticleSystem magicPoof;
+    public Renderer scribbleRenderer;
+    public Renderer planeRenderer;
+
 	// Use this for initialization
 	void Awake () {
         physics = this.GetComponent<Rigidbody>();
@@ -72,21 +76,52 @@ public class PlaneControl : MonoBehaviour {
             audio.Play();
             StartCoroutine(die());
         }
-        else
-        {
-            Debug.Log("Special plane lands on "+collision.gameObject.name);
-            audio.Play();
-
-            float clipLength = audio.clip.length;
-            StartCoroutine(playResponseIn(clipLength));
+        //else
+        //{
+        //    Debug.Log("Special plane lands on "+collision.gameObject.name);
+        //    playMessage();
             
-        }
+        //}
 
+    }
+
+    public void playMessage()
+    {
+        magicPoof.Play();
+
+        Debug.Log("Playing audio in " + magicPoof.main.duration);
+        StartCoroutine(playAudioIn(magicPoof.main.startLifetime.constant));
+        StartCoroutine(changeMagicObjectIn(magicPoof.main.startLifetime.constant / 2));
+
+        
+    }
+
+    IEnumerator changeMagicObjectIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        scribbleRenderer.enabled = true;
+        scribbleRenderer.gameObject.GetComponent<Collider>().enabled = true;
+        planeRenderer.enabled = false;
+        planeRenderer.gameObject.GetComponent<Collider>().enabled = false;
+
+    }
+
+    IEnumerator playAudioIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+       
+
+        audio.Play();
+
+
+        float clipLength = audio.clip.length;
+        StartCoroutine(playResponseIn(clipLength));
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isLastPlane)
+        if (!isSpecialPlane)
             return;
 
         if (triggerHappened)
@@ -108,10 +143,18 @@ public class PlaneControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
         responseAudio.clip = responeMessage;
-        responseAudio.Play();
 
-        float clipLength = responeMessage.length;
-        StartCoroutine(resumeBattleIn(clipLength));
+        if (responseAudio.clip != null)
+        {
+            responseAudio.Play();
+
+            float clipLength = responeMessage.length;
+            StartCoroutine(resumeBattleIn(clipLength));
+        }
+        else
+        {
+            StartCoroutine(resumeBattleIn(0f));
+        }
 
         yield return null;
     }
@@ -122,6 +165,8 @@ public class PlaneControl : MonoBehaviour {
         gameManager.nextIteration();
         exclamation.SetActive(false);
 
+        physics.isKinematic = false;
+        physics.useGravity = true;
 
     }
 
@@ -133,7 +178,7 @@ public class PlaneControl : MonoBehaviour {
    
     public void setMessageAudio(AudioClip message, AudioClip response)
     {
-        Debug.Log(message.name + " "+ response.name);
+        //Debug.Log(message.name + " "+ response.name);
         audio.clip = message;
         responeMessage = response;
     }

@@ -138,10 +138,26 @@ public class FlowControl : MonoBehaviour {
         menuMusic.Stop();
 
         float introTime = throneRoom.getIntroAudio().clip.length;
-        StartCoroutine(transitionToBattleIn(introTime));
+        //StartCoroutine(transitionToBattleIn(introTime));
 
         throneRoom.playIntro();
+
+        StartCoroutine(doNextThroneSequenceIn(introTime));
+
+        //throneRoom.playBackground();
+    }
+
+    IEnumerator doNextThroneSequenceIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        //throneRoom.playSecondPiece();
         throneRoom.playBackground();
+
+        yield return new WaitForSeconds(2f);
+        throneRoom.playSecondPiece();
+
+        float clipLength = throneRoom.getIntroAudio().clip.length;
+        StartCoroutine(transitionToBattleIn(clipLength));
     }
 
     IEnumerator transitionToBattleIn(float seconds)

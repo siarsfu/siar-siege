@@ -38,7 +38,7 @@ public class PlanePickUpControl : MonoBehaviour {
             //    return;
             
 
-            if (handVelocity.magnitude > 3f || Input.GetKeyDown(KeyCode.R))
+            if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R))
             {
                 Rigidbody planePhysics = lastPlane.GetComponent<Rigidbody>();
                 lastPlane.transform.parent = null;

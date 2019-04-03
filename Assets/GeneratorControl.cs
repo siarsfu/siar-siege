@@ -6,13 +6,14 @@ using UnityEngine;
 public class GeneratorControl : MonoBehaviour {
 
     public PlaneGenerator[] generators;
+    public PlaneGenerator middleGenerator;
     private int size;
 
     public float secondPeriod = 1f;
 
 	// Use this for initialization
 	void Start () {
-        generators = this.GetComponentsInChildren<PlaneGenerator>();
+        //generators = this.GetComponentsInChildren<PlaneGenerator>();
         size = generators.Length;
         StartCoroutine(shootPlane());
 	}
@@ -41,7 +42,7 @@ public class GeneratorControl : MonoBehaviour {
     public void launchSpecialPlane(AudioClip message, AudioClip response)
     {
         int randomIndex = UnityEngine.Random.Range(0, size);
-        generators[randomIndex].generateSpecialPlane(message, response);
+        middleGenerator.generateSpecialPlane(message, response);
     }
 
     public void increaseFrequency(float generatorIncreaseStep)
@@ -52,5 +53,10 @@ public class GeneratorControl : MonoBehaviour {
     public void Stop()
     {
         StopAllCoroutines();
+    }
+
+    public void Resume()
+    {
+        StartCoroutine(shootPlane());
     }
 }
