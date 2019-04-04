@@ -27,6 +27,11 @@ public class PlaneControl : MonoBehaviour {
     public ParticleSystem magicPoof;
     public Renderer scribbleRenderer;
     public Renderer planeRenderer;
+    public Material[] possibleNoteMats;
+
+    public ArmyChange armyManager;
+
+    public ParticleSystem finalExplosion;
 
 	// Use this for initialization
 	void Awake () {
@@ -39,6 +44,11 @@ public class PlaneControl : MonoBehaviour {
 
         responseAudio = GameObject.Find("response_audio").GetComponent<AudioSource>();
         gameManager = GameObject.FindGameObjectWithTag("System").GetComponent<GameManager>();
+
+        armyManager = GameObject.Find("army").GetComponent<ArmyChange>();
+
+        if (isLastPlane)
+            triggerHappened = true;
 	}
 	
 	// Update is called once per frame
@@ -68,14 +78,23 @@ public class PlaneControl : MonoBehaviour {
         if (collision.gameObject.name != "fan")
             collisionWithEnvironment = true;
 
+        if (isLastPlane)
+        {
+            physics.isKinematic = true;
+            physics.useGravity = false;
+            finalExplosion.Play();
+            gameManager.initiateFinishAnimation();
+        }
 
-        if (!isSpecialPlane)
+        if (!isSpecialPlane && !isLastPlane)
         {
             int randomPaperSound = UnityEngine.Random.Range(0, soundsSize);
             audio.clip = paperRustles[randomPaperSound];
             audio.Play();
             StartCoroutine(die());
         }
+
+
         //else
         //{
         //    Debug.Log("Special plane lands on "+collision.gameObject.name);
@@ -100,6 +119,10 @@ public class PlaneControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
         scribbleRenderer.enabled = true;
+
+        int randomMat = Random.Range(0, possibleNoteMats.Length);
+        scribbleRenderer.material = possibleNoteMats[randomMat];
+
         scribbleRenderer.gameObject.GetComponent<Collider>().enabled = true;
         planeRenderer.enabled = false;
         planeRenderer.gameObject.GetComponent<Collider>().enabled = false;
@@ -121,7 +144,7 @@ public class PlaneControl : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isSpecialPlane)
+        if (!isSpecialPlane && !isLastPlane)
             return;
 
         if (triggerHappened)
@@ -141,7 +164,11 @@ public class PlaneControl : MonoBehaviour {
 
     IEnumerator playResponseIn(float seconds)
     {
-        yield return new WaitForSeconds(seconds);
+        if (!isLastPlane)
+            yield return new WaitForSeconds(seconds);
+        else
+            yield return new WaitForSeconds(seconds + 3f);
+
         responseAudio.clip = responeMessage;
 
         if (responseAudio.clip != null)
@@ -161,6 +188,14 @@ public class PlaneControl : MonoBehaviour {
 
     IEnumerator resumeBattleIn(float seconds)
     {
+
+        if (!isLastPlane)
+            armyManager.destroyPartsOfArmy();
+        else
+        {
+            armyManager.destroyRestOfArmy();
+        }
+
         yield return new WaitForSeconds(seconds);
         gameManager.nextIteration();
         exclamation.SetActive(false);
@@ -182,4 +217,13 @@ public class PlaneControl : MonoBehaviour {
         audio.clip = message;
         responeMessage = response;
     }
+
+    public void setLastAudio(AudioClip message, AudioClip response)
+    {
+        //Debug.Log(message.name + " "+ response.name);
+        audio.clip = message;
+        responeMessage = response;
+        isLastPlane = true;
+    }
+
 }

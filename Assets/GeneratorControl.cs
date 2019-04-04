@@ -39,10 +39,10 @@ public class GeneratorControl : MonoBehaviour {
     }
 
   
-    public void launchSpecialPlane(AudioClip message, AudioClip response)
+    public void launchSpecialPlane(AudioClip message, AudioClip response, bool isLast)
     {
         int randomIndex = UnityEngine.Random.Range(0, size);
-        middleGenerator.generateSpecialPlane(message, response);
+        middleGenerator.generateSpecialPlane(message, response, isLast);
     }
 
     public void increaseFrequency(float generatorIncreaseStep)
@@ -59,4 +59,6 @@ public class GeneratorControl : MonoBehaviour {
     {
         StartCoroutine(shootPlane());
     }
+
+   
 }

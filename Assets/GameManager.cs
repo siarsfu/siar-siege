@@ -46,6 +46,13 @@ public class GameManager : MonoBehaviour {
 
     public ParticleSystem fanMagicPoof;
 
+    public Light sunLight;
+
+    public ArmyChange armyManager;
+
+    public AudioSource windAudio;
+    public AudioClip byTheSea;
+
 	// Use this for initialization
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
@@ -57,6 +64,9 @@ public class GameManager : MonoBehaviour {
 
         //StartCoroutine(siegeGameLoop());
        // initiateFinishAnimation();
+
+        //temporary
+        
 	}
 	
 	// Update is called once per frame
@@ -83,12 +93,16 @@ public class GameManager : MonoBehaviour {
         {
             if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
             {
+
                 state = GameState.END;
                 planePickUpControl.pickUpFan();
                 
+                //any button was pressed
 
             }
         }
+
+   
 
 	}
 
@@ -114,6 +128,23 @@ public class GameManager : MonoBehaviour {
        StartCoroutine(getBackToNormal());
     }
 
+    IEnumerator decreaseWindAudio()
+    {
+        while (windAudio.volume>=0.01f)
+        {
+            windAudio.volume = Mathf.Lerp(windAudio.volume, 0f, Time.deltaTime);
+            yield return null;
+        }
+
+        windAudio.clip = byTheSea;
+
+        while (windAudio.volume <= 0.29f)
+        {
+            windAudio.volume = Mathf.Lerp(windAudio.volume, 0.3f, Time.deltaTime);
+            yield return null;
+        }
+    }
+
     IEnumerator getBackToNormal(){
 
         Material skyboxMat = RenderSettings.skybox;
@@ -123,15 +154,32 @@ public class GameManager : MonoBehaviour {
         postProcess.TryGetSettings(out colorGrading);
         //colorGrading.saturation.value = 0;
         fog.Stop();
-        
+
+        armyManager.makeSoldierHappy();
+
+        StartCoroutine(decreaseWindAudio());
+
 
         while(true){
-            colorGrading.saturation.value = Mathf.Lerp(colorGrading.saturation.value, 0f, Time.deltaTime);
+            colorGrading.saturation.value = Mathf.Lerp(colorGrading.saturation.value, 0f, Time.deltaTime/10);
             float fogEnd = skyboxMat.GetFloat("_FogEnd");
-            float lerpedValue = Mathf.Lerp(fogEnd, 0f, Time.deltaTime);
-            skyboxMat.SetFloat("_FogEnd", lerpedValue);
+            float fogDensity = skyboxMat.GetFloat("_FogIntens");
 
-            RenderSettings.fogEndDistance = Mathf.Lerp(RenderSettings.fogEndDistance, 1000f, Time.deltaTime);
+            float lerpedValue = Mathf.Lerp(fogEnd, 0f, Time.deltaTime/10);
+            float densityValue = Mathf.Lerp(fogDensity, 0f, Time.deltaTime/10);
+
+            skyboxMat.SetFloat("_FogEnd", lerpedValue);
+            skyboxMat.SetFloat("_FogIntens", densityValue);
+
+            RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, 1f, Time.deltaTime/10);
+            sunLight.intensity = Mathf.Lerp(sunLight.intensity, 1f, Time.deltaTime/10);
+            //RenderSettings.fogEndDistance = Mathf.Lerp(RenderSettings.fogEndDistance, 1000f, Time.deltaTime);
+
+            RenderSettings.fog = false;
+
+            //ParticleSystem.MainModule fogModule = fog.main;
+            //fogModule.maxParticles--;
+           
 
             yield return null;
         }
@@ -151,13 +199,54 @@ public class GameManager : MonoBehaviour {
         Debug.Log(message.name);
         AudioClip response = audioManager.retrieveResponseAt(currentIndex);
         //Debug.Log(response.name);
-        planeGenerator.launchSpecialPlane(message, response);
+        planeGenerator.launchSpecialPlane(message, response, false);
         
         //stop the fan
         fanRotation.StopFan();
         fanParticles.Stop();
         fanSound.decreaseSound();
         
+
+        yield return null;
+    }
+
+    IEnumerator increaseGeneratorFrequency()
+    {
+        float secondsBeforeLast = messagePeriod * 2;
+        float generationIncrease = 0.1f / secondsBeforeLast;
+        while (true)
+        {
+            //TODO: increase the frequency as battle goes
+            yield return new WaitForSeconds(secondsBeforeLast);
+            planeGenerator.increaseFrequency(generationIncrease);
+            yield return null;
+        }
+
+        yield return null;
+    }
+
+    IEnumerator lastMessageLoop()
+    {
+        Debug.Log("Next plane coming in " + messagePeriod);
+
+        StartCoroutine(increaseGeneratorFrequency());
+
+        yield return new WaitForSeconds(messagePeriod*2);
+
+        //stop the siege happening
+        planeGenerator.Stop();
+
+        AudioClip message = audioManager.retrieveMessageAt(currentIndex);
+        Debug.Log(message.name);
+        AudioClip response = audioManager.retrieveResponseAt(currentIndex);
+        //Debug.Log(response.name);
+        planeGenerator.launchSpecialPlane(message, response, true);
+
+        //stop the fan
+        fanRotation.StopFan();
+        fanParticles.Stop();
+        fanSound.decreaseSound();
+
 
         yield return null;
     }
@@ -189,8 +278,32 @@ public class GameManager : MonoBehaviour {
 
     }
 
-   
 
+    IEnumerator updateLight()
+    {
+        float currentAmbient = RenderSettings.ambientIntensity;
+        float currentLight = sunLight.intensity;
+
+        float nextAmbient = currentAmbient - 0.5f / numberOfMessages;
+        float nextLight = currentLight - 0.5f / numberOfMessages;
+
+        Debug.Log("Next sunlight is " + nextLight);
+
+        bool isRunning = true;
+
+        while (isRunning)
+        {
+            RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, nextAmbient, Time.deltaTime);
+            sunLight.intensity = Mathf.Lerp(sunLight.intensity, nextLight, Time.deltaTime);
+
+            if (Math.Abs(sunLight.intensity - nextLight) < 0.001)
+                isRunning = false;
+
+            yield return null;
+        }
+
+        yield return null;
+    }
 
     public void nextIteration()
     {
@@ -198,11 +311,21 @@ public class GameManager : MonoBehaviour {
         currentIndex++;
         healthBar.planeHit();
 
+        StartCoroutine(updateLight());
+        //RenderSettings.ambientIntensity -= 0.8f / numberOfMessages;
+        //sunLight.intensity -= 0.8f / numberOfMessages;
+
         Debug.Log("Next iteration and index is " + currentIndex);
         planeGenerator.increaseFrequency(generatorIncreaseStep);
+
+        //if (currentIndex%2==0)
+        //    armyManager.destroyPartsOfArmy();
        
         if (currentIndex == numberOfMessages)
         {
+            //THE ENDING OF GAME
+
+
             Debug.Log("End game");
             //state = GameState.FINISH;
             //let planes come at increased speed
@@ -210,6 +333,9 @@ public class GameManager : MonoBehaviour {
             
             
             //StartCoroutine(decreasePlanesFrequency());
+
+            //armyManager.destroyRestOfArmy();
+
             fanPickUpControl.fadeAway();
             float clipLength = fanPickUpControl.fadingAnimation.length;
             StartCoroutine(displayMagicMessageIn(clipLength));
@@ -220,7 +346,14 @@ public class GameManager : MonoBehaviour {
             fanParticles.Play();
             fanSound.increaseVolume();
             planeGenerator.Resume();
-            StartCoroutine(siegeGameLoop());
+
+            if (currentIndex == numberOfMessages - 1)
+            {
+                StartCoroutine(lastMessageLoop());
+               
+            }
+            else
+                StartCoroutine(siegeGameLoop());
         }
         
     }

@@ -43,10 +43,14 @@ public class PlaneGenerator : MonoBehaviour {
 
   
 
-    public void generateSpecialPlane(AudioClip message, AudioClip response)
+    public void generateSpecialPlane(AudioClip message, AudioClip response, bool isLast)
     {
         GameObject plane = Instantiate(specialPlanePrefab, this.transform.position, this.transform.rotation);
-        plane.GetComponent<PlaneControl>().setMessageAudio(message, response);
+
+        if (!isLast)
+            plane.GetComponent<PlaneControl>().setMessageAudio(message, response);
+        else
+            plane.GetComponent<PlaneControl>().setLastAudio(message, response);
 
         Rigidbody physics = plane.GetComponent<Rigidbody>();
 

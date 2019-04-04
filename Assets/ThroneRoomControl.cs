@@ -46,10 +46,23 @@ public class ThroneRoomControl : MonoBehaviour {
     public void playBackground()
     {
         backgroundCrowd.Play();
+        StartCoroutine(increaseBackgroundVolume());
+    }
+
+    IEnumerator increaseBackgroundVolume()
+    {
+        while (true)
+        {
+            backgroundCrowd.volume = Mathf.Lerp(backgroundCrowd.volume, 1f, Time.deltaTime);
+            yield return null;
+        }
+
+        yield return null;
     }
 
     public void stopBackground()
     {
+        StopAllCoroutines();
         StartCoroutine(fadeBackgroundNoise());
         //backgroundCrowd.Stop();
     }

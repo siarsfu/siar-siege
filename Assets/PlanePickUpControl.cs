@@ -17,6 +17,10 @@ public class PlanePickUpControl : MonoBehaviour {
     private PlaneControl planeControl;
     private bool isReadyToBeThrowed = false;
     public bool isUsedOnPC = true;
+    public bool wasButtonReleased = false;
+    public bool transitionHappened = false;
+
+    public AudioSource planeSwoosh;
 
 	// Use this for initialization
 	void Start () {
@@ -26,19 +30,29 @@ public class PlanePickUpControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         handVelocity = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
+        
 
 
-
-        if (isReadyToBeThrowed)
+        if (transitionHappened)
         {
             if (!aimingIsCorrect())
                 return;
 
-            //if (!handVelocityInRightDirection() && !isUsedOnPC)
-            //    return;
+            if (OVRInput.GetUp(OVRInput.Button.Any))
+                wasButtonReleased = true;
+
+            if (!wasButtonReleased)
+                return;
+
             
 
-            if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R))
+            //if (!handVelocityInRightDirection() && !isUsedOnPC)
+            //    return;
+
+            
+            
+
+            if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R) || OVRInput.GetDown(OVRInput.Button.Any))
             {
                 Rigidbody planePhysics = lastPlane.GetComponent<Rigidbody>();
                 lastPlane.transform.parent = null;
@@ -53,7 +67,10 @@ public class PlanePickUpControl : MonoBehaviour {
                 isReadyToBeThrowed = false;
                 lastPlaneBehavior.stopAnimatingTrajectory();
 
-                GameObject.FindWithTag("System").GetComponent<GameManager>().initiateFinishAnimation();
+                //play sound
+                planeSwoosh.Play();
+
+                //GameObject.FindWithTag("System").GetComponent<GameManager>().initiateFinishAnimation();
             }
         }
 
@@ -112,7 +129,9 @@ public class PlanePickUpControl : MonoBehaviour {
         lastPlane.transform.localPosition = offset.localPosition;
         lastPlane.transform.localRotation = offset.localRotation;
 
-        isReadyToBeThrowed = true;
+        //isReadyToBeThrowed = true;
+        transitionHappened = true;
+        
     }
 
   

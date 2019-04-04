@@ -34,6 +34,8 @@ public class FlowControl : MonoBehaviour {
 
     private IEnumerator lowerMenuVolume;
 
+    public AudioSource windAudio;   
+
 	// Use this for initialization
 	void Start () {
         //the experience starts with small pause after which the menu appears
@@ -151,14 +153,18 @@ public class FlowControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
         //throneRoom.playSecondPiece();
-        throneRoom.playBackground();
 
-        yield return new WaitForSeconds(2f);
+        throneRoom.playBackground();
+        
+
+        yield return new WaitForSeconds(5f);
         throneRoom.playSecondPiece();
 
         float clipLength = throneRoom.getIntroAudio().clip.length;
         StartCoroutine(transitionToBattleIn(clipLength));
     }
+
+  
 
     IEnumerator transitionToBattleIn(float seconds)
     {
@@ -170,6 +176,8 @@ public class FlowControl : MonoBehaviour {
 
         fadingController.fadeToBlackIn(fadeToBlackTime);
 
+        //StartCoroutine(increaseWindAudioIn(overallTime / 2));
+
         StartCoroutine(teleportUserToBattleIn(overallTime));
     }
 
@@ -177,11 +185,14 @@ public class FlowControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
         teleportToBattle();
+        RenderSettings.fog = true;
+        StartCoroutine(increaseWindAudioIn(0));
 
         float fadeWhiteSeconds = 0f;
         float beginBattleEventsTime = fadeWhiteSeconds + fadingController.getFadingTime();
 
         fadingController.fadeToWhiteIn(fadeWhiteSeconds);
+
 
         yield return new WaitForSeconds(beginBattleEventsTime);
         doBattleSequence();
@@ -192,6 +203,21 @@ public class FlowControl : MonoBehaviour {
     {
         Debug.Log("Battle!");
         gameManager.begin();
+        //windAudio.volume = 0.6f;
+       // StartCoroutine(increaseWindAudio());
+    }
+
+    IEnumerator increaseWindAudioIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+      
+        while (true)
+        {
+            windAudio.volume = Mathf.Lerp(windAudio.volume, 0.6f, Time.deltaTime);
+            yield return null;
+        }
+
+        yield return null;
     }
 
     public void teleportToBattle()

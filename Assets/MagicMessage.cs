@@ -14,6 +14,7 @@ public class MagicMessage : MonoBehaviour {
     public Renderer lastPlaneRenderer;
     public GameObject lastPlane;
     public GameManager gameManager;
+    public AudioSource scribbleSound;
 
 	// Use this for initialization
 	void Start () {
@@ -32,6 +33,8 @@ public class MagicMessage : MonoBehaviour {
     public void showMessage()
     {
         magicPoof.Play();
+      
+
         StartCoroutine(changeMagicObjectIn(magicPoof.main.startLifetime.constant / 2));
         StartCoroutine(playMissYouVideoIn(magicPoof.main.startLifetime.constant));
         //messageRender.enabled = true;
@@ -50,6 +53,8 @@ public class MagicMessage : MonoBehaviour {
        
        // letterAnimation.Play();
         letterAnimation.Play();
+        scribbleSound.Play();
+        StartCoroutine(stopScribbleSoundIn(4f));
 
         float clipLength = (float)letterAnimation.clip.length;
 
@@ -60,8 +65,15 @@ public class MagicMessage : MonoBehaviour {
     IEnumerator transformIntoPlaneIn(float seconds)
     {
         yield return new WaitForSeconds(seconds);
+        
         magicPoof.Play();
         StartCoroutine(changeMagicObjectToPlane(magicPoof.main.startLifetime.constant / 2));
+    }
+
+    IEnumerator stopScribbleSoundIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        scribbleSound.Stop();
     }
 
     IEnumerator changeMagicObjectToPlane(float seconds)
