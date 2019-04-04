@@ -87,6 +87,8 @@ public class GameManager : MonoBehaviour {
                 disableWyverns();
 
                 StartCoroutine(siegeGameLoop());
+
+                StartCoroutine(decreaseWindAudio());
             }
         }
         else if (state == GameState.FINISH)

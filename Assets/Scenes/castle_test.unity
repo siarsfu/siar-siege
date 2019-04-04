@@ -41774,7 +41774,7 @@ MonoBehaviour:
   fanMagicPoof: {fileID: 19069621}
   sunLight: {fileID: 86020966}
   armyManager: {fileID: 1073153435}
-  windAudio: {fileID: 1014685782}
+  windAudio: {fileID: 560623157}
   byTheSea: {fileID: 8300000, guid: 6e69ac90ffe78df4ea0230c78fbefbbe, type: 3}
 --- !u!114 &1604352393
 MonoBehaviour:
