@@ -32,6 +32,7 @@ public class PlaneControl : MonoBehaviour {
     public ArmyChange armyManager;
 
     public ParticleSystem finalExplosion;
+    public Animator explosionLightAnimation;
 
 	// Use this for initialization
 	void Awake () {
@@ -83,6 +84,7 @@ public class PlaneControl : MonoBehaviour {
             physics.isKinematic = true;
             physics.useGravity = false;
             finalExplosion.Play();
+            explosionLightAnimation.enabled = true;
             gameManager.initiateFinishAnimation();
         }
 

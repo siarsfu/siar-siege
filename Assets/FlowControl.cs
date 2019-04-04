@@ -211,7 +211,7 @@ public class FlowControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
       
-        while (true)
+        while (windAudio.volume <= 0.599f)
         {
             windAudio.volume = Mathf.Lerp(windAudio.volume, 0.6f, Time.deltaTime);
             yield return null;

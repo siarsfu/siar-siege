@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour {
     public AudioSource windAudio;
     public AudioClip byTheSea;
 
+    public FadingController fadeController;
+
 	// Use this for initialization
 	void Start () {
         numberOfMessages = audioManager.getNumberOfMessages();
@@ -74,6 +76,8 @@ public class GameManager : MonoBehaviour {
 
         if (state == GameState.BEFORE_PLAYING)
         {
+            
+
             if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
             {
                 state = GameState.PLAYING;
@@ -87,8 +91,6 @@ public class GameManager : MonoBehaviour {
                 disableWyverns();
 
                 StartCoroutine(siegeGameLoop());
-
-                StartCoroutine(decreaseWindAudio());
             }
         }
         else if (state == GameState.FINISH)
@@ -104,7 +106,10 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-   
+        //temp
+        if (Input.GetKeyDown(KeyCode.M)){
+            StartCoroutine(decreaseWindAudio());
+        }
 
 	}
 
@@ -139,15 +144,18 @@ public class GameManager : MonoBehaviour {
         }
 
         windAudio.clip = byTheSea;
+        windAudio.Play();
 
-        while (windAudio.volume <= 0.29f)
+        while (windAudio.volume <= 0.0299f)
         {
-            windAudio.volume = Mathf.Lerp(windAudio.volume, 0.3f, Time.deltaTime);
+            windAudio.volume = Mathf.Lerp(windAudio.volume, 0.03f, Time.deltaTime);
             yield return null;
         }
     }
 
     IEnumerator getBackToNormal(){
+
+        yield return new WaitForSeconds(5f); //because explosion takes time
 
         Material skyboxMat = RenderSettings.skybox;
 
@@ -160,6 +168,8 @@ public class GameManager : MonoBehaviour {
         armyManager.makeSoldierHappy();
 
         StartCoroutine(decreaseWindAudio());
+
+        StartCoroutine(finishExperienceIn(35f));
 
 
         while(true){
@@ -187,6 +197,20 @@ public class GameManager : MonoBehaviour {
         }
 
         yield return null;
+    }
+
+    IEnumerator finishExperienceIn(float seconds){
+        yield return new WaitForSeconds(seconds);
+        fadeController.fadeToBlackIn(0);
+        StartCoroutine(fadeMusic());
+    }
+
+    IEnumerator fadeMusic(){
+        while (true)
+        {
+            windAudio.volume = Mathf.Lerp(windAudio.volume, 0f, Time.deltaTime);
+            yield return null;
+        }
     }
 
     IEnumerator siegeGameLoop()

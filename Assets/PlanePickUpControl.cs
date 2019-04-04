@@ -35,10 +35,11 @@ public class PlanePickUpControl : MonoBehaviour {
 
         if (transitionHappened)
         {
+
             if (!aimingIsCorrect())
                 return;
 
-            if (OVRInput.GetUp(OVRInput.Button.Any))
+            if (OVRInput.GetUp(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.R))
                 wasButtonReleased = true;
 
             if (!wasButtonReleased)
@@ -54,21 +55,9 @@ public class PlanePickUpControl : MonoBehaviour {
 
             if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R) || OVRInput.GetDown(OVRInput.Button.Any))
             {
-                Rigidbody planePhysics = lastPlane.GetComponent<Rigidbody>();
-                lastPlane.transform.parent = null;
-                planePhysics.angularVelocity = Vector3.zero;
-                planePhysics.velocity = Vector3.zero;
-                planePhysics.isKinematic = false;
-                planePhysics.useGravity = true;
-
-                planePhysics.AddForce(rightHand.forward * 15f, ForceMode.Impulse);
-                planeControl.enabled = true;
-
-                isReadyToBeThrowed = false;
-                lastPlaneBehavior.stopAnimatingTrajectory();
-
-                //play sound
-                planeSwoosh.Play();
+                StopAllCoroutines();
+                throwPlane();
+               
 
                 //GameObject.FindWithTag("System").GetComponent<GameManager>().initiateFinishAnimation();
             }
@@ -80,6 +69,38 @@ public class PlanePickUpControl : MonoBehaviour {
         //    lastPlaneBehavior.begin();
         //}
 	}
+
+    public void throwPlane(){
+        Rigidbody planePhysics = lastPlane.GetComponent<Rigidbody>();
+        lastPlane.transform.parent = null;
+        planePhysics.angularVelocity = Vector3.zero;
+        planePhysics.velocity = Vector3.zero;
+        planePhysics.isKinematic = false;
+        planePhysics.useGravity = true;
+
+        planePhysics.AddForce(rightHand.forward * 15f, ForceMode.Impulse);
+        planeControl.enabled = true;
+
+        transitionHappened = false;
+        lastPlaneBehavior.stopAnimatingTrajectory();
+
+        //play sound
+        planeSwoosh.Play();
+    }
+
+    IEnumerator autoThrowPlane(){
+
+        for (int i = 0; i < 5; i++){
+
+            if (!aimingIsCorrect())
+                i = -1;
+
+            yield return new WaitForSeconds(1f);
+        }
+
+        throwPlane();
+
+    }
 
     private bool handVelocityInRightDirection()
     {
@@ -131,7 +152,7 @@ public class PlanePickUpControl : MonoBehaviour {
 
         //isReadyToBeThrowed = true;
         transitionHappened = true;
-        
+        StartCoroutine(autoThrowPlane());
     }
 
   
