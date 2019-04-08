@@ -266,3 +266,10 @@ MonoBehaviour:
   responseAudio: {fileID: 0}
   gameManager: {fileID: 0}
   exclamation: {fileID: 0}
+  magicPoof: {fileID: 0}
+  scribbleRenderer: {fileID: 0}
+  planeRenderer: {fileID: 0}
+  possibleNoteMats: []
+  armyManager: {fileID: 0}
+  finalExplosion: {fileID: 0}
+  explosionLightAnimation: {fileID: 0}

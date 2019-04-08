@@ -391,6 +391,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fanMaxSpeed: 12
+  fanKnockbackPower: 25
+  currentPower: 0
+  wind: {fileID: 0}
+  windHitCollider: {fileID: 0}
+  handToUse: 0
+  rightGrabber: {fileID: 0}
+  leftGrabber: {fileID: 0}
 --- !u!136 &136013871617970680
 CapsuleCollider:
   m_ObjectHideFlags: 1

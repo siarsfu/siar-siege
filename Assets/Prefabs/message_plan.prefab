@@ -513,6 +513,9 @@ MonoBehaviour:
   - {fileID: 2100000, guid: ce37f466e17afb44b885946963cec1a8, type: 2}
   - {fileID: 2100000, guid: 25e623221e6f725419bbe5cf07582ccc, type: 2}
   - {fileID: 2100000, guid: c7ed375045429db43afb3aaf6547a3cc, type: 2}
+  armyManager: {fileID: 0}
+  finalExplosion: {fileID: 0}
+  explosionLightAnimation: {fileID: 0}
 --- !u!114 &114982263926482638
 MonoBehaviour:
   m_ObjectHideFlags: 1
