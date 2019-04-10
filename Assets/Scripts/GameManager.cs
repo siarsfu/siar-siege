@@ -63,11 +63,6 @@ public class GameManager : MonoBehaviour {
         state = GameState.INTRO;
         gameLoop = siegeGameLoop();
         currentIndex = 0;
-
-        //StartCoroutine(siegeGameLoop());
-       // initiateFinishAnimation();
-
-        //temporary
         
 	}
 	
@@ -76,19 +71,15 @@ public class GameManager : MonoBehaviour {
 
         if (state == GameState.BEFORE_PLAYING)
         {
-            
 
             if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
             {
                 state = GameState.PLAYING;
                 Debug.Log("Playing!");
 
-                //TODO: fan pickup
+                // fan pickup
                 fanPickUpControl.pickUpFan();
                 throneRoom.playFanSpeech();
-
-                //disable wyverns which are close
-                disableWyverns();
 
                 StartCoroutine(siegeGameLoop());
             }
@@ -106,29 +97,8 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        //temp
-        if (Input.GetKeyDown(KeyCode.M)){
-            StartCoroutine(decreaseWindAudio());
-        }
-
 	}
 
-    private void disableWyverns()
-    {
-        for (int i = 0; i < beasts.Length; i++)
-        {
-            beasts[i].Stop();
-        }
-    }
-
-    private void disableBackWyverns()
-    {
-        for (int i = 0; i < backgroundBeasts.Length; i++)
-        {
-            backgroundBeasts[i].Stop();
-
-        }
-    }
 
     public void initiateFinishAnimation()
     {
@@ -159,10 +129,8 @@ public class GameManager : MonoBehaviour {
 
         Material skyboxMat = RenderSettings.skybox;
 
-
         ColorGrading colorGrading;
         postProcess.TryGetSettings(out colorGrading);
-        //colorGrading.saturation.value = 0;
         fog.Stop();
 
         armyManager.makeSoldierHappy();
@@ -185,13 +153,8 @@ public class GameManager : MonoBehaviour {
 
             RenderSettings.ambientIntensity = Mathf.Lerp(RenderSettings.ambientIntensity, 1f, Time.deltaTime/10);
             sunLight.intensity = Mathf.Lerp(sunLight.intensity, 1f, Time.deltaTime/10);
-            //RenderSettings.fogEndDistance = Mathf.Lerp(RenderSettings.fogEndDistance, 1000f, Time.deltaTime);
-
+        
             RenderSettings.fog = false;
-
-            //ParticleSystem.MainModule fogModule = fog.main;
-            //fogModule.maxParticles--;
-           
 
             yield return null;
         }
@@ -242,7 +205,7 @@ public class GameManager : MonoBehaviour {
         float generationIncrease = 0.1f / secondsBeforeLast;
         while (true)
         {
-            //TODO: increase the frequency as battle goes
+            //increase the frequency as battle goes
             yield return new WaitForSeconds(secondsBeforeLast);
             planeGenerator.increaseFrequency(generationIncrease);
             yield return null;
@@ -265,7 +228,7 @@ public class GameManager : MonoBehaviour {
         AudioClip message = audioManager.retrieveMessageAt(currentIndex);
         Debug.Log(message.name);
         AudioClip response = audioManager.retrieveResponseAt(currentIndex);
-        //Debug.Log(response.name);
+      
         planeGenerator.launchSpecialPlane(message, response, true);
 
         //stop the fan
@@ -281,9 +244,6 @@ public class GameManager : MonoBehaviour {
     {
         //experience starts with just enabling the paper plane generation
         planeGenerator.enabled = true;
-
-        //state is now before playing, the real game will start after user picks up the fan
-        //state = GameState.BEFORE_PLAYING;
 
         StartCoroutine(playAnnoyedMessageIn(5f));
 
@@ -338,29 +298,12 @@ public class GameManager : MonoBehaviour {
         healthBar.planeHit();
 
         StartCoroutine(updateLight());
-        //RenderSettings.ambientIntensity -= 0.8f / numberOfMessages;
-        //sunLight.intensity -= 0.8f / numberOfMessages;
 
-        Debug.Log("Next iteration and index is " + currentIndex);
         planeGenerator.increaseFrequency(generatorIncreaseStep);
 
-        //if (currentIndex%2==0)
-        //    armyManager.destroyPartsOfArmy();
-       
         if (currentIndex == numberOfMessages)
         {
             //THE ENDING OF GAME
-
-
-            Debug.Log("End game");
-            //state = GameState.FINISH;
-            //let planes come at increased speed
-            //then slowly start decrease
-            
-            
-            //StartCoroutine(decreasePlanesFrequency());
-
-            //armyManager.destroyRestOfArmy();
 
             fanPickUpControl.fadeAway();
             float clipLength = fanPickUpControl.fadingAnimation.length;
@@ -401,9 +344,6 @@ public class GameManager : MonoBehaviour {
 
         //planeGenerator.enabled = false;
         planeGenerator.Stop();
-
-        //disable all wyverns
-        disableBackWyverns();
 
         //fade the fan away
         fanPickUpControl.fadeAway();

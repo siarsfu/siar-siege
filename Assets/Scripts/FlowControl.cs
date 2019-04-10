@@ -15,8 +15,6 @@ public class FlowControl : MonoBehaviour {
     public VideoPlayer menuVideo;
     public VideoPlayer scribbleVideo;
     public float secondsBeforeExperienceBegins = 2f;
-    public TextMeshProUGUI menuText;
-    public float secondsBeforeFadingBlack = 2f;
     public FadingController fadingController;
     public GameObject playerObject;
     public Transform throneRoomTeleport;
@@ -32,18 +30,20 @@ public class FlowControl : MonoBehaviour {
     public AudioSource menuMusic;
     public AudioSource scribbleMusic;
 
-    private IEnumerator lowerMenuVolume;
+  
 
-    public AudioSource windAudio;   
+    public AudioSource windAudio;
+
+    public delegate void ActionDelegate();
 
 	// Use this for initialization
 	void Start () {
         //the experience starts with small pause after which the menu appears
         state = MenuState.INTRO;
-        StartCoroutine(beginningPause(secondsBeforeExperienceBegins));
-        secondsBeforeFadingBlack = (float)scribbleVideo.clip.length;
-        //Debug.Log(secondsBeforeFadingBlack + " seconds before fading");
-        lowerMenuVolume = lowerVolumeMenu();
+
+        executeActionIn(showVideo, secondsBeforeExperienceBegins);
+        //StartCoroutine(executeActionAfter(secondsBeforeExperienceBegins, showVideo));
+
 	}
 	
 	// Update is called once per frame
@@ -54,89 +54,73 @@ public class FlowControl : MonoBehaviour {
         if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
         {
             state = MenuState.FINISH;
-            
+
             //start scribble video sequence
-            scribbleVideo.gameObject.GetComponent<Renderer>().enabled = true;
-            scribbleVideo.Play();
+            startMenuScribble();
 
-            //play scribble sound
-            scribbleMusic.Play();
-
-            //volume down the menu music
-            StartCoroutine(lowerMenuVolume);
-
+            //begin transition
             beginTransitionToThroneRoom();
         }
 	}
 
-    IEnumerator lowerVolumeMenu(){
-        while(true){
+    public void startMenuScribble(){
 
-            menuMusic.volume = Mathf.Lerp(menuMusic.volume, 0f, Time.deltaTime);
-            yield return null;
-        }
+        //play the video
+        scribbleVideo.gameObject.GetComponent<Renderer>().enabled = true;
+        scribbleVideo.Play();
+
+        //play scribble sound
+        scribbleMusic.Play();
+
+        //volume down the menu music
+        StartCoroutine(lowerVolumeMenu());
     }
 
-    IEnumerator beginningPause(float seconds){
-        yield return new WaitForSeconds(seconds);
-        showVideo();
-    }
-
-    private void showVideo(){
+    private void showVideo()
+    {
 
         VideoClip menuClip = menuVideo.clip;
-        double menuClipLength = menuClip.length;
-        Debug.Log("Video is " + menuClipLength + " secoonds long");
+        float menuClipLength = (float)menuClip.length;
+        menuVideo.Play();
 
         //so after the animation was finished, display the text
-        StartCoroutine(showMenuTextAfterSeconds((float)menuClipLength));
 
-        menuVideo.Play();
+        executeActionIn(enableUserInput, menuClipLength);
+        //StartCoroutine(executeActionAfter(menuClipLength, enableUserInput));
+
+
     }
 
-    IEnumerator showMenuTextAfterSeconds(float seconds){
-        Debug.Log("Showing text after " + seconds+" seconds");
-        yield return new WaitForSeconds(seconds);
-        //menuText.enabled = true;
-        state = MenuState.PRESS_BUTTON;
-        //fade to black after some time passes
-        //beginTransitionToThroneRoom();
-    }
+    private void beginTransitionToThroneRoom()
+    {
+       
+        float secondsBeforeFadingBlack = (float)scribbleVideo.clip.length;
 
-    private void beginTransitionToThroneRoom(){
-        Debug.Log("Fade to black in " + secondsBeforeFadingBlack);
         fadingController.fadeToBlackIn(secondsBeforeFadingBlack);
 
         float fadingTime = fadingController.getFadingTime() + secondsBeforeFadingBlack;
 
-        StartCoroutine(teleportUserToThroneIn(fadingTime));
+        executeActionIn(teleportToThrone, fadingTime);
 
     }
 
-    IEnumerator teleportUserToThroneIn(float seconds){
-        yield return new WaitForSeconds(seconds);
-        teleportToThrone();
+    private void teleportToThrone()
+    {
+        playerObject.transform.position = throneRoomTeleport.transform.position;
+        playerObject.transform.rotation = throneRoomTeleport.transform.rotation;
 
         float fadeBackIn = 0f;
         float throneSceneStartsIn = fadeBackIn + fadingController.getFadingTime();
 
         fadingController.fadeToWhiteIn(fadeBackIn);
-        StartCoroutine(throneSceneEventsIn(throneSceneStartsIn));
+
+        executeActionIn(doThroneSceneSequence, throneSceneStartsIn);
     }
 
-    private void teleportToThrone(){
-        playerObject.transform.position = throneRoomTeleport.transform.position;
-        playerObject.transform.rotation = throneRoomTeleport.transform.rotation;
-    }
-
-    IEnumerator throneSceneEventsIn(float seconds){
-        yield return new WaitForSeconds(seconds);
-        doThroneSceneSequence();
-    }
-
-    public void doThroneSceneSequence(){
+    public void doThroneSceneSequence()
+    {
         Debug.Log("Throne scene!");
-        StopCoroutine(lowerMenuVolume);
+
         menuMusic.Stop();
 
         float introTime = throneRoom.getIntroAudio().clip.length;
@@ -144,31 +128,65 @@ public class FlowControl : MonoBehaviour {
 
         throneRoom.playIntro();
 
-        StartCoroutine(doNextThroneSequenceIn(introTime));
+        executeActionIn(doFirstPartThroneSequence, introTime);
 
-        //throneRoom.playBackground();
     }
 
-    IEnumerator doNextThroneSequenceIn(float seconds)
+    public void doBattleSequence()
     {
+        Debug.Log("Battle!");
+        gameManager.begin();
+    }
+
+    public void teleportToBattle()
+    {
+        playerObject.transform.position = battleTeleport.position;
+        playerObject.transform.rotation = battleTeleport.rotation;
+    }
+
+
+    public void executeActionIn(ActionDelegate action, float seconds){
+        StartCoroutine(executeActionAfter(action, seconds));
+    }
+
+    IEnumerator executeActionAfter(ActionDelegate action, float seconds){
         yield return new WaitForSeconds(seconds);
-        //throneRoom.playSecondPiece();
+        Debug.Log("Execute action!");
+        action();
+    }
 
+    IEnumerator lowerVolumeMenu(){
+        while(menuMusic.volume>=0.001f){
+
+            menuMusic.volume = Mathf.Lerp(menuMusic.volume, 0f, Time.deltaTime);
+            yield return null;
+        }
+    }
+
+
+    public void enableUserInput(){
+        state = MenuState.PRESS_BUTTON;
+    }
+
+ 
+    public void doFirstPartThroneSequence(){
         throneRoom.playBackground();
-        
 
-        yield return new WaitForSeconds(5f);
+        executeActionIn(doSecondPartThroneSequence, 5f);
+    }
+
+    public void doSecondPartThroneSequence(){
         throneRoom.playSecondPiece();
 
         float clipLength = throneRoom.getIntroAudio().clip.length;
-        StartCoroutine(transitionToBattleIn(clipLength));
+
+
+        executeActionIn(transitionToBattle, clipLength);
     }
+   
 
-  
+    public void transitionToBattle(){
 
-    IEnumerator transitionToBattleIn(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
         throneRoom.stopBackground();
 
         float fadeToBlackTime = 0f;
@@ -176,14 +194,12 @@ public class FlowControl : MonoBehaviour {
 
         fadingController.fadeToBlackIn(fadeToBlackTime);
 
-        //StartCoroutine(increaseWindAudioIn(overallTime / 2));
+        executeActionIn(teleportUserToBattle, overallTime);
 
-        StartCoroutine(teleportUserToBattleIn(overallTime));
     }
 
-    IEnumerator teleportUserToBattleIn(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
+
+    public void teleportUserToBattle(){
         teleportToBattle();
         RenderSettings.fog = true;
         StartCoroutine(increaseWindAudioIn(0));
@@ -194,18 +210,10 @@ public class FlowControl : MonoBehaviour {
         fadingController.fadeToWhiteIn(fadeWhiteSeconds);
 
 
-        yield return new WaitForSeconds(beginBattleEventsTime);
-        doBattleSequence();
-
+        executeActionIn(doBattleSequence, beginBattleEventsTime);
     }
 
-    public void doBattleSequence()
-    {
-        Debug.Log("Battle!");
-        gameManager.begin();
-        //windAudio.volume = 0.6f;
-       // StartCoroutine(increaseWindAudio());
-    }
+
 
     IEnumerator increaseWindAudioIn(float seconds)
     {
@@ -220,9 +228,5 @@ public class FlowControl : MonoBehaviour {
         yield return null;
     }
 
-    public void teleportToBattle()
-    {
-        playerObject.transform.position = battleTeleport.position;
-        playerObject.transform.rotation = battleTeleport.rotation;
-    }
+
 }

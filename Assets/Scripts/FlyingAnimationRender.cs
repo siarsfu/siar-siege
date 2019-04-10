@@ -31,9 +31,8 @@ public class FlyingAnimationRender : MonoBehaviour {
         allLinePositions = new Vector3[totalPositionSize];
         lineRenderer.GetPositions(allLinePositions);
 
-        //StartCoroutine(animationLoop());
+     
         loop = animationLoop();
-        //animationRunning = false;
 
         StartCoroutine(loop);
 
@@ -45,17 +44,14 @@ public class FlyingAnimationRender : MonoBehaviour {
 	}
 
     IEnumerator animationLoop(){
-
-       // animationRunning = true;
+    
         Debug.Log("Setting animation to run!");
         while(true){
 
             while (animationRunning)
             {
-                //Debug.Log("Current index is " + currentIndex);
+        
                 int size = lineRenderer.GetPositions(allLinePositions);
-
-                //Debug.Log("Position of curren vertex is " + allLinePositions[currentIndex]);
 
                 objectToRender.transform.localPosition = allLinePositions[currentIndex];
 
@@ -72,18 +68,10 @@ public class FlyingAnimationRender : MonoBehaviour {
 
                     Vector3 direction = (nextPosition - currentPosition).normalized;
 
-                    //Vector3 localForward = objectToRender.transform.worldToLocalMatrix.MultiplyVector(objectToRender.transform.forward);
-
                     Quaternion newRotation = Quaternion.FromToRotation(Vector3.forward, direction);
-
-                    //objectToRender.transform.forward = objectToRender.transform.localToWorldMatrix.MultiplyVector(direction);
 
                     objectToRender.transform.localRotation = newRotation;
 
-                }
-                else
-                {
-                    //take previous and approximate
                 }
 
                 //iterate next

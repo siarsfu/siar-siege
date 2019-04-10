@@ -9828,18 +9828,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efe266538a8dcda4dbd04fbff7997053, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &327575249 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114995201871618934, guid: efe266538a8dcda4dbd04fbff7997053,
-    type: 2}
-  m_PrefabInternal: {fileID: 327575248}
-  m_Script: {fileID: 11500000, guid: fd425c2d06f39bf4899d07c05d0f10eb, type: 3}
---- !u!114 &327575250 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114978179600194586, guid: efe266538a8dcda4dbd04fbff7997053,
-    type: 2}
-  m_PrefabInternal: {fileID: 327575248}
-  m_Script: {fileID: 11500000, guid: fd425c2d06f39bf4899d07c05d0f10eb, type: 3}
 --- !u!1 &328561132
 GameObject:
   m_ObjectHideFlags: 0
@@ -31570,7 +31558,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1087124498}
   m_LocalRotation: {x: -0, y: 0.8013203, z: -0, w: 0.59823555}
-  m_LocalPosition: {x: -366.99567, y: -61.66, z: 134.50682}
+  m_LocalPosition: {x: -366.927, y: -61.66, z: 134.739}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -34095,11 +34083,6 @@ MonoBehaviour:
   fanMaxSpeed: 5
   fanKnockbackPower: 25
   currentPower: 0
-  wind: {fileID: 0}
-  windHitCollider: {fileID: 655833268}
-  handToUse: 0
-  rightGrabber: {fileID: 327575250}
-  leftGrabber: {fileID: 327575249}
 --- !u!114 &1308929622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36965,7 +36948,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1532361994}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.215, y: -0.259, z: 0.761}
+  m_LocalPosition: {x: 0.215, y: -0.259, z: 0.6}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 875148543}
@@ -42831,8 +42814,6 @@ MonoBehaviour:
   menuVideo: {fileID: 1901279756}
   scribbleVideo: {fileID: 338444198}
   secondsBeforeExperienceBegins: 2
-  menuText: {fileID: 0}
-  secondsBeforeFadingBlack: 2
   fadingController: {fileID: 842885230}
   playerObject: {fileID: 2098253425}
   throneRoomTeleport: {fileID: 1087124499}
@@ -43041,13 +43022,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1608424798}
-  m_LocalRotation: {x: -0, y: 0.90184444, z: -0, w: -0.43206102}
-  m_LocalPosition: {x: -16.053, y: 24.034, z: 118.245}
+  m_LocalRotation: {x: 0, y: 0.9025853, z: -0, w: -0.43051103}
+  m_LocalPosition: {x: -16.687, y: 23.656, z: 117.875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 39
-  m_LocalEulerAnglesHint: {x: 0, y: 231.19699, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 231, z: 0}
 --- !u!1001 &1617609122
 Prefab:
   m_ObjectHideFlags: 0

@@ -45,9 +45,6 @@ public class LastPlaneBehaviour : MonoBehaviour {
             yield return null; 
         }
 
-        //next step: make it hover and rotate
-        //pickUpControl.enabled = true;
-
         //notify system that the final stage is ready
         GameManager manager = GameObject.FindGameObjectWithTag("System").GetComponent<GameManager>();
         //manager.initiateFinalState();

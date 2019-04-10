@@ -54,22 +54,15 @@ public class PlaneControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //this.transform.forward = Vector3.Slerp(this.transform.forward, physics.velocity.normalized, Time.deltaTime);
 
-        //if (!collisionHappened)
-        //{
-            //this.transform.forward = physics.velocity.normalized;
         if (!collisionWithEnvironment)
             this.transform.forward = Vector3.Slerp(this.transform.forward, physics.velocity.normalized, 2f*Time.deltaTime);
-       // }
+  
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-       // Debug.Log("Colliding with " + collision.gameObject.name);
-
-        //if (isLastPlane)
-        //    return;
+       
 
         if (collisionHappened)
             return;
@@ -95,14 +88,6 @@ public class PlaneControl : MonoBehaviour {
             audio.Play();
             StartCoroutine(die());
         }
-
-
-        //else
-        //{
-        //    Debug.Log("Special plane lands on "+collision.gameObject.name);
-        //    playMessage();
-            
-        //}
 
     }
 
@@ -135,10 +120,7 @@ public class PlaneControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(seconds);
 
-       
-
         audio.Play();
-
 
         float clipLength = audio.clip.length;
         StartCoroutine(playResponseIn(clipLength));

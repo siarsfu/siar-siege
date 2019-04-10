@@ -14,22 +14,6 @@ public class FanShield : MonoBehaviour {
     private IEnumerator fanAccelerate;
     private IEnumerator fanDeccelerate;
 
-    public ParticleSystem wind;
-    public BoxCollider windHitCollider;
-
-    public enum Hand
-    {
-        RIGHT, LEFT
-    }
-
-    public Hand handToUse;
-
-    private OVRInput.Button buttonToBeUsed;
-
-    public OVRGrabber rightGrabber;
-    public OVRGrabber leftGrabber;
-
-    private OVRGrabber currentGrabber;
 
 	// Use this for initialization
 	void Start () {
@@ -37,45 +21,10 @@ public class FanShield : MonoBehaviour {
         currentPower = fanKnockbackPower;
         fanAccelerate = startFan();
         fanDeccelerate = stopFan();
-
-        //windHitCollider = this.GetComponent<BoxCollider>();
-
-        if (handToUse == Hand.RIGHT)
-            currentGrabber = rightGrabber;
-        else
-            currentGrabber = leftGrabber;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-        //when button is pressed, increase rotation speed
-        //when unpressed, slowly slow down
-        if (Input.GetKeyDown(KeyCode.R) || (OVRInput.GetDown(buttonToBeUsed))){
-            //StopCoroutine(fanAccelerate);
-            //StopCoroutine(fanDeccelerate);
-            //StartCoroutine(fanAccelerate);
-
-            //windHitCollider.enabled = true;
-            //wind.Play();
-        } 
-        if (Input.GetKeyUp(KeyCode.R) || (OVRInput.GetUp(buttonToBeUsed))){
-            //StopCoroutine(fanDeccelerate);
-            //StopCoroutine(fanAccelerate);
-            //StartCoroutine(fanDeccelerate);
-
-            //windHitCollider.enabled = false;
-            //wind.Stop();
-        }
-        //this.transform.Rotate(this.transform.forward, currentSpeed, Space.World);
-
-        //if (currentGrabber.grabbedObject == null)
-        //{
-        //    windHitCollider.enabled = false;
-        //} else if (currentGrabber.grabbedObject.gameObject == this.gameObject) {
-        //    windHitCollider.enabled = true;
-        //}
-
         
 	}
 
@@ -107,29 +56,15 @@ public class FanShield : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Collision!");
-        //FlyingScript plane = collision.gameObject.GetComponent<FlyingScript>();
-        //if (plane!=null)
-        //    plane.planeDeflected(this.transform.forward);
-        //else
-        //{
-
-
+ 
         if (collision.gameObject.GetComponent<PlaneControl>() == null)
             return;
 
-        //Debug.Log("Colliding");
             Rigidbody physics = collision.gameObject.GetComponent<Rigidbody>();
 
-            //if (collision.gameObject.GetComponent<BeastNode>() != null)
-            //    collision.gameObject.GetComponent<BeastNode>().enabled = false;
-            //physics.isKinematic = false;
-            //physics.useGravity = true;
-            //physics.constraints = RigidbodyConstraints.None;
 
             physics.AddForce(this.transform.forward * currentPower, ForceMode.Impulse);
-            //physics.useGravity = true;
-       // }
+
     }
 
     void onTriggerEnter(Collider collider)
