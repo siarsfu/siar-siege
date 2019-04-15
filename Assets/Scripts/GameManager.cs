@@ -109,18 +109,20 @@ public class GameManager : MonoBehaviour {
     {
         while (windAudio.volume>=0.01f)
         {
-            windAudio.volume = Mathf.Lerp(windAudio.volume, 0f, Time.deltaTime);
+            windAudio.volume = Mathf.Lerp(windAudio.volume, 0f, Time.deltaTime*2);
             yield return null;
         }
 
         windAudio.clip = byTheSea;
+        windAudio.volume = 0.04f;
         windAudio.Play();
+      
 
-        while (windAudio.volume <= 0.0299f)
-        {
-            windAudio.volume = Mathf.Lerp(windAudio.volume, 0.03f, Time.deltaTime);
-            yield return null;
-        }
+        //while (windAudio.volume <= 0.0399f)
+        //{
+        //    windAudio.volume = Mathf.Lerp(windAudio.volume, 0.04f, Time.deltaTime*2);
+        //    yield return null;
+        //}
     }
 
     IEnumerator getBackToNormal(){
@@ -136,8 +138,9 @@ public class GameManager : MonoBehaviour {
         armyManager.makeSoldierHappy();
 
         StartCoroutine(decreaseWindAudio());
+        StartCoroutine(releaseBeastsIn(5f));
 
-        StartCoroutine(finishExperienceIn(35f));
+        StartCoroutine(finishExperienceIn(30f));
 
 
         while(true){
@@ -157,6 +160,18 @@ public class GameManager : MonoBehaviour {
             RenderSettings.fog = false;
 
             yield return null;
+        }
+
+        yield return null;
+    }
+
+    IEnumerator releaseBeastsIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        for (int i = 0; i < beasts.Length; i++)
+        {
+            beasts[i].gameObject.SetActive(true);
         }
 
         yield return null;
