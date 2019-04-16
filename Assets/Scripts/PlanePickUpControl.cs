@@ -53,7 +53,7 @@ public class PlanePickUpControl : MonoBehaviour {
             
             
 
-            if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R) || OVRInput.GetDown(OVRInput.Button.Any))
+            if (Input.GetKeyDown(KeyCode.R) || OVRInput.GetDown(OVRInput.Button.Any))
             {
                 StopAllCoroutines();
                 throwPlane();

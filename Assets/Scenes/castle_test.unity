@@ -21857,7 +21857,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 9399eeb70fc0c470cbe576dd06de0df5, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -42779,6 +42779,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1604352391}
+  - component: {fileID: 1604352396}
   - component: {fileID: 1604352390}
   - component: {fileID: 1604352392}
   - component: {fileID: 1604352393}
@@ -42797,7 +42798,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1604352389}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbc78666f459b44f6a8e22d696bf0fb8, type: 3}
   m_Name: 
@@ -42944,6 +42945,17 @@ MonoBehaviour:
   wasButtonReleased: 0
   transitionHappened: 0
   planeSwoosh: {fileID: 123559535}
+--- !u!114 &1604352396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1604352389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd4555518a2625846ad81fbbbeab5218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1605350243
 GameObject:
   m_ObjectHideFlags: 0
@@ -50393,7 +50405,7 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1835665132}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3e8e6c7b9d6cb45d8b60afcdb8f21b96, type: 3}
