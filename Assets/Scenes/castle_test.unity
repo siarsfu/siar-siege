@@ -9803,7 +9803,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1862540227445348, guid: efe266538a8dcda4dbd04fbff7997053, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 20695223691583696, guid: efe266538a8dcda4dbd04fbff7997053,
         type: 2}
@@ -9828,11 +9828,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efe266538a8dcda4dbd04fbff7997053, type: 2}
   m_IsPrefabAsset: 0
---- !u!1 &327575249 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1862540227445348, guid: efe266538a8dcda4dbd04fbff7997053,
-    type: 2}
-  m_PrefabInternal: {fileID: 327575248}
 --- !u!1 &328561132
 GameObject:
   m_ObjectHideFlags: 0
@@ -22014,7 +22009,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 9399eeb70fc0c470cbe576dd06de0df5, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -42168,11 +42163,6 @@ Transform:
   m_Father: {fileID: 882222376}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1572414283 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4743094318967424, guid: efe266538a8dcda4dbd04fbff7997053,
-    type: 2}
-  m_PrefabInternal: {fileID: 327575248}
 --- !u!1001 &1574136284
 Prefab:
   m_ObjectHideFlags: 0
@@ -42806,11 +42796,11 @@ MonoBehaviour:
   menuVideo: {fileID: 1901279756}
   scribbleVideo: {fileID: 338444198}
   secondsBeforeExperienceBegins: 2
-  fadingController: {fileID: 835345195}
-  playerObject: {fileID: 327575249}
+  fadingController: {fileID: 842885230}
+  playerObject: {fileID: 1640444802}
   throneRoomTeleport: {fileID: 1087124499}
   throneRoom: {fileID: 1078599907}
-  battleTeleport: {fileID: 1980426012}
+  battleTeleport: {fileID: 1608424799}
   gameManager: {fileID: 1604352392}
   menuMusic: {fileID: 1835665134}
   scribbleMusic: {fileID: 383132532}
@@ -42876,7 +42866,7 @@ MonoBehaviour:
   armyManager: {fileID: 1073153435}
   windAudio: {fileID: 560623157}
   byTheSea: {fileID: 8300000, guid: 6e69ac90ffe78df4ea0230c78fbefbbe, type: 3}
-  fadeController: {fileID: 835345195}
+  fadeController: {fileID: 842885230}
 --- !u!114 &1604352393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42890,7 +42880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fan: {fileID: 1308929616}
   offset: {fileID: 734609572}
-  rightHand: {fileID: 1572414283}
+  rightHand: {fileID: 1532361995}
   leftHand: {fileID: 716430333}
   fadingAnimation: {fileID: 7400000, guid: fe4936a2babf6124e944182a93b3004f, type: 2}
 --- !u!114 &1604352394
@@ -42939,7 +42929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lastPlane: {fileID: 0}
   offset: {fileID: 1041330979}
-  rightHand: {fileID: 1572414283}
+  rightHand: {fileID: 1532361995}
   handVelocity: {x: 0, y: 0, z: 0}
   isUsedOnPC: 0
   wasButtonReleased: 0
@@ -43420,6 +43410,11 @@ Transform:
   m_Father: {fileID: 1322328240}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1640444802 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0,
+    type: 2}
+  m_PrefabInternal: {fileID: 2098253424}
 --- !u!1 &1640921005
 GameObject:
   m_ObjectHideFlags: 0
@@ -68050,7 +68045,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_UseGravity

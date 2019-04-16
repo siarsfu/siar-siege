@@ -54,7 +54,7 @@ public class FlowControl : MonoBehaviour {
         if (state != MenuState.PRESS_BUTTON)
             return;
 
-        if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
+        if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
         {
             state = MenuState.FINISH;
 

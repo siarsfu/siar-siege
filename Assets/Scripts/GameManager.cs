@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour {
         if (state == GameState.BEFORE_PLAYING)
         {
 
-            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
+            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
             {
                 state = GameState.PLAYING;
                 Debug.Log("Playing!");
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour {
         }
         else if (state == GameState.FINISH)
         {
-            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
+            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
             {
 
                 state = GameState.END;
