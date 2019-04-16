@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour {
 
@@ -72,7 +74,7 @@ public class GameManager : MonoBehaviour {
         if (state == GameState.BEFORE_PLAYING)
         {
 
-            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
+            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
             {
                 state = GameState.PLAYING;
                 Debug.Log("Playing!");
@@ -86,7 +88,7 @@ public class GameManager : MonoBehaviour {
         }
         else if (state == GameState.FINISH)
         {
-            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
+            if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
             {
 
                 state = GameState.END;
@@ -181,6 +183,13 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(seconds);
         fadeController.fadeToBlackIn(0);
         StartCoroutine(fadeMusic());
+        StartCoroutine(restartSceneIn(fadeController.getFadingTime() + 3f));
+    }
+
+    IEnumerator restartSceneIn(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.LoadScene("castle_test");
     }
 
     IEnumerator fadeMusic(){

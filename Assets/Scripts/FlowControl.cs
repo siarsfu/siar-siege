@@ -41,6 +41,9 @@ public class FlowControl : MonoBehaviour {
         //the experience starts with small pause after which the menu appears
         state = MenuState.INTRO;
 
+        float fadeInSeconds = 3f;
+        secondsBeforeExperienceBegins = fadingController.getFadingTime()+fadeInSeconds;
+        fadingController.fadeToWhiteIn(fadeInSeconds);
         executeActionIn(showVideo, secondsBeforeExperienceBegins);
         //StartCoroutine(executeActionAfter(secondsBeforeExperienceBegins, showVideo));
 
@@ -51,7 +54,7 @@ public class FlowControl : MonoBehaviour {
         if (state != MenuState.PRESS_BUTTON)
             return;
 
-        if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.T))
+        if (OVRInput.GetDown(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
         {
             state = MenuState.FINISH;
 
@@ -82,6 +85,7 @@ public class FlowControl : MonoBehaviour {
         VideoClip menuClip = menuVideo.clip;
         float menuClipLength = (float)menuClip.length;
         menuVideo.Play();
+        menuMusic.enabled = true;
 
         //so after the animation was finished, display the text
 

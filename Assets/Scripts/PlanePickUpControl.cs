@@ -39,7 +39,7 @@ public class PlanePickUpControl : MonoBehaviour {
             if (!aimingIsCorrect())
                 return;
 
-            if (OVRInput.GetUp(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.R))
+            if (OVRInput.GetUp(OVRInput.Button.Any) || Input.GetKeyDown(KeyCode.Space))
                 wasButtonReleased = true;
 
             if (!wasButtonReleased)
@@ -53,7 +53,7 @@ public class PlanePickUpControl : MonoBehaviour {
             
             
 
-            if (handVelocity.magnitude > 2.5f || Input.GetKeyDown(KeyCode.R) || OVRInput.GetDown(OVRInput.Button.Any))
+            if (Input.GetKeyDown(KeyCode.Space) || OVRInput.GetDown(OVRInput.Button.Any))
             {
                 StopAllCoroutines();
                 throwPlane();
